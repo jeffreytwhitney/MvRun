@@ -11,8 +11,6 @@ from lib import Utilities
 def get_processor(input_filepath: str, op_num: str, user_initials: str, output_filepath: str, rev_number: str, smartprofile_file_name: str, is_profile: bool):
     return (
         CoonRapidsProcessor(input_filepath, op_num, user_initials, output_filepath, rev_number, smartprofile_file_name, is_profile)
-        if Utilities.GetStoredIniValue("Location", "Site", "Settings") == "CoonRapids"
-        else AnokaProcessor(input_filepath, op_num, user_initials, output_filepath, rev_number, smartprofile_file_name, is_profile)
     )
 
 

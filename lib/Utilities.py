@@ -4,8 +4,7 @@ import os
 
 def GetIniFilePath(ini_file_name):
     current_dir = os.path.dirname(__file__)
-    ini_path = current_dir + "\\" + ini_file_name + ".ini"
-    return ini_path
+    return current_dir + "\\" + ini_file_name + ".ini"
 
 
 def GetStoredIniValue(ini_section, ini_key, ini_filename):
@@ -38,11 +37,3 @@ def StoreIniValue(ini_value, ini_section, ini_key, ini_filename):
         with open(ini_file_path, "w") as conf:
             config.write(conf)
 
-
-def GetMicroVuFolderSubDirectory(directory_to_check):
-    if directory_to_check.find("\\311\\") != -1:
-        return "311"
-    if directory_to_check.find("\\341\\") != -1:
-        return "341"
-    if directory_to_check.find("\\420\\") != -1:
-        return "420"
