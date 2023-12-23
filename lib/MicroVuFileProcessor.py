@@ -1,14 +1,10 @@
 import os
-import re
+
 from abc import ABCMeta, abstractmethod
-from datetime import datetime
-from pathlib import Path
-
-import lib.Utilities
-from lib import Utilities
 
 
-def get_processor(input_filepath: str, op_num: str, user_initials: str, output_filepath: str, rev_number: str, smartprofile_file_name: str, is_profile: bool):
+def get_processor(input_filepath: str, op_num: str, user_initials: str, output_filepath: str, rev_number: str,
+                  smartprofile_file_name: str, is_profile: bool):
     return (
         CoonRapidsProcessor(input_filepath, op_num, user_initials, output_filepath, rev_number, smartprofile_file_name, is_profile)
     )
@@ -25,7 +21,8 @@ def _get_node_text(line_text: str, search_value: str, start_delimiter: str, end_
     return line_text[begin_index + 1:end_index].strip()
 
 
-def _set_node_text(line_text: str, search_value: str, set_value: str, start_delimiter: str, end_delimiter: str = "") -> str:
+def _set_node_text(line_text: str, search_value: str, set_value: str, start_delimiter: str,
+                   end_delimiter: str = "") -> str:
     current_value: str = _get_node_text(line_text, search_value, start_delimiter, end_delimiter)
     current_node: str = search_value + start_delimiter + current_value + end_delimiter
     new_node: str = search_value + start_delimiter + set_value + end_delimiter
@@ -33,7 +30,8 @@ def _set_node_text(line_text: str, search_value: str, set_value: str, start_deli
 
 
 class Processor(metaclass=ABCMeta):
-    def __init__(self, mv_input_filepath: str, op_num: str, user_initials: str, mv_output_filepath: str, rev_number: str, smartprofile_file_name: str, is_profile: bool):
+    def __init__(self, mv_input_filepath: str, op_num: str, user_initials: str, mv_output_filepath: str,
+                 rev_number: str, smartprofile_file_name: str, is_profile: bool):
         self.filepath = mv_input_filepath
         self.user_initials = user_initials
         self.input_filepath = mv_input_filepath
@@ -59,7 +57,7 @@ class CoonRapidsProcessor(Processor):
         return next((i for i, l in enumerate(self.file_lines) if l.upper().find(text_to_find.upper()) > 1), 0)
 
     def _replace_prompt_section(self) -> None:
-        prompt_file: str = ""
+        prompt_filepath: str = ""
         insert_index: int = self._get_index_containing_text("(Name \"Created")
         if not insert_index or not self.file_lines[insert_index].startswith("Txt"):
             raise ProcessorException("There is no 'Created By' line. Cannot process file.")
@@ -73,10 +71,10 @@ class CoonRapidsProcessor(Processor):
         for root, dirs, files in os.walk('.'):
             for file in files:
                 if file == pattern:
-                    prompt_file = os.path.join(root, file)
-        if not prompt_file:
+                    prompt_filepath = os.path.join(root, file)
+        if not prompt_filepath:
             return
-        with open(prompt_file, "r", encoding='utf-16-le') as f:
+        with open(prompt_filepath, "r", encoding='utf-16-le') as f:
             prompt_lines = f.readlines()
 
         return
