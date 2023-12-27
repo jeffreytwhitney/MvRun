@@ -91,8 +91,6 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         self.txtMachineName.textChanged.connect(self.txtMachineName_textchanged)
         return
 
-
-
     def _load_settings(self):
         self._output_path = lib.Utilities.GetStoredIniValue("Paths", "outputrootpath", "Settings")
         self._input_rootpath = lib.Utilities.GetStoredIniValue("Paths", "inputrootpath", "Settings")
@@ -160,6 +158,12 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         if not self.txtSequenceNumber.text().strip():
             self._show_error_message("Sequence Number cannot be empty.", "Invalid Entry")
             return False
+        if not self.txtSequenceNumber.text().strip().isdecimal() or int(self.txtSequenceNumber.text()) < 1:
+            self._show_error_message("Invalid Sequence Number.", "Invalid Entry")
+            return False
+        if not self.txtEmployeeID.text().strip().isdecimal() or int(self.txtSequenceNumber.text()) < 900 or int(self.txtSequenceNumber.text()) < 9999:
+            self._show_error_message("Invalid Employee Number.", "Invalid Entry")
+            return False
 
     def txtJobNumber_textchanged(self):
         self._enable_process_button()
@@ -189,7 +193,6 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
             self.cboRecentPrograms.setCurrentIndex(1)
             self._enable_process_button()
         return
-
 
     def btnRunMicroVu_clicked(self):
         pass
