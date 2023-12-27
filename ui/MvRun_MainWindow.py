@@ -78,13 +78,20 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         self.setupUi(self)
         self._load_settings()
         self._load_recent_files()
+        self._bind_events()
         return
 
     def _bind_events(self):
         self.btnFind.clicked.connect(self.btnFind_clicked)
         self.btnRunMicroVu.clicked.connect(self.btnRunMicroVu_clicked)
         self.cboRecentPrograms.currentTextChanged.connect(self.cboRecentPrograms_currentTextChanged)
+        self.txtSequenceNumber.textChanged.connect(self.txtSequenceNumber_textchanged)
+        self.txtJobNumber.textChanged.connect(self.txtJobNumber_textchanged)
+        self.txtEmployeeID.textChanged.connect(self.txtEmployeeID_textchanged)
+        self.txtMachineName.textChanged.connect(self.txtMachineName_textchanged)
         return
+
+
 
     def _load_settings(self):
         self._output_path = lib.Utilities.GetStoredIniValue("Paths", "outputrootpath", "Settings")
@@ -140,19 +147,6 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
                 self.cboRecentPrograms.addItem(base_name, file_path)
         return
 
-    def cboRecentPrograms_currentTextChanged(self):
-        self._enable_process_button()
-        return
-
-    def btnFind_clicked(self):
-        output_filepath, file_filter = self._get_filepath_via_dialog("Select MicroVu File", self._input_rootpath)
-        if output_filepath:
-            base_name = os.path.basename(output_filepath).strip()
-            self.cboRecentPrograms.insertItem(1, base_name, output_filepath)
-            self.cboRecentPrograms.setCurrentIndex(1)
-            self._enable_process_button()
-        return
-
     def _validate_form(self):
         if not self.txtJobNumber.text().strip():
             self._show_error_message("Job Number cannot be empty.", "Invalid Entry")
@@ -166,6 +160,36 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         if not self.txtSequenceNumber.text().strip():
             self._show_error_message("Sequence Number cannot be empty.", "Invalid Entry")
             return False
+
+    def txtJobNumber_textchanged(self):
+        self._enable_process_button()
+        return
+
+    def txtMachineName_textchanged(self):
+        self._enable_process_button()
+        return
+
+    def txtEmployeeID_textchanged(self):
+        self._enable_process_button()
+        return
+
+    def txtSequenceNumber_textchanged(self):
+        self._enable_process_button()
+        return
+
+    def cboRecentPrograms_currentTextChanged(self):
+        self._enable_process_button()
+        return
+
+    def btnFind_clicked(self):
+        output_filepath, file_filter = self._get_filepath_via_dialog("Select MicroVu File", self._input_rootpath)
+        if output_filepath:
+            base_name = os.path.basename(output_filepath).strip()
+            self.cboRecentPrograms.insertItem(1, base_name, output_filepath)
+            self.cboRecentPrograms.setCurrentIndex(1)
+            self._enable_process_button()
+        return
+
 
     def btnRunMicroVu_clicked(self):
         pass
