@@ -10,10 +10,10 @@ class ui_MvRun_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MvRun_MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 10, 201, 81))
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 10, 200, 90))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout.setContentsMargins(0, 0, 0, 5)
         self.gridLayout.setObjectName("gridLayout")
 
         self.lblEmployeeID = QtWidgets.QLabel(self.gridLayoutWidget)
@@ -21,6 +21,7 @@ class ui_MvRun_MainWindow(object):
         self.gridLayout.addWidget(self.lblEmployeeID, 0, 0, 1, 1)
         self.txtEmployeeID = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtEmployeeID.setObjectName("txtEmployeeID")
+        self.txtEmployeeID.setMinimumHeight(20)
         self.gridLayout.addWidget(self.txtEmployeeID, 0, 1, 1, 1)
 
         self.lblJobNumber = QtWidgets.QLabel(self.gridLayoutWidget)
@@ -28,6 +29,7 @@ class ui_MvRun_MainWindow(object):
         self.gridLayout.addWidget(self.lblJobNumber, 1, 0, 1, 1)
         self.txtJobNumber = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtJobNumber.setObjectName("txtJobNumber")
+        self.txtJobNumber.setMinimumHeight(20)
         self.gridLayout.addWidget(self.txtJobNumber, 1, 1, 1, 1)
 
         self.lblMachineName = QtWidgets.QLabel(self.gridLayoutWidget)
@@ -35,6 +37,7 @@ class ui_MvRun_MainWindow(object):
         self.gridLayout.addWidget(self.lblMachineName, 2, 0, 1, 1)
         self.txtMachineName = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtMachineName.setObjectName("txtMachineName")
+        self.txtMachineName.setMinimumHeight(20)
         self.gridLayout.addWidget(self.txtMachineName, 2, 1, 1, 1)
 
         self.lblSequenceNumber = QtWidgets.QLabel(self.gridLayoutWidget)
@@ -42,10 +45,11 @@ class ui_MvRun_MainWindow(object):
         self.gridLayout.addWidget(self.lblSequenceNumber, 3, 0, 1, 1)
         self.txtSequenceNumber = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtSequenceNumber.setObjectName("txtSequenceNumber")
+        self.txtSequenceNumber.setMinimumHeight(20)
         self.gridLayout.addWidget(self.txtSequenceNumber, 3, 1, 1, 1)
 
         self.gridLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 100, 571, 50))
+        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 110, 571, 50))
         self.gridLayoutWidget_2.setObjectName("gridLayoutWidget_2")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.gridLayoutWidget_2)
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)

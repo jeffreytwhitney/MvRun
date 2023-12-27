@@ -8,9 +8,11 @@ recent_files_filepath = ""
 
 def _write_recent_files(file_lines: list[str]):
     list_filepath = _get_recentfiles_filepath()
+    line_count = min(len(file_lines), 15)
+
     with open(list_filepath, "w") as f:
-        for file in file_lines:
-            f.write(f"{file.strip()}\n")
+        for i in range(line_count):
+            f.write(f"{file_lines[i].strip()}\n")
 
 
 def _get_recentfiles_filepath() -> str:
