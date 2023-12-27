@@ -45,7 +45,7 @@ class ui_MvRun_MainWindow(object):
         self.gridLayout.addWidget(self.txtSequenceNumber, 3, 1, 1, 1)
 
         self.gridLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 100, 571, 41))
+        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(10, 100, 571, 50))
         self.gridLayoutWidget_2.setObjectName("gridLayoutWidget_2")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.gridLayoutWidget_2)
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -54,6 +54,7 @@ class ui_MvRun_MainWindow(object):
         self.cboRecentPrograms = QtWidgets.QComboBox(self.gridLayoutWidget_2)
         self.cboRecentPrograms.setObjectName("cboRecentPrograms")
         self.gridLayout_2.addWidget(self.cboRecentPrograms, 1, 0, 1, 1)
+
         self.btnFind = QtWidgets.QToolButton(self.gridLayoutWidget_2)
         self.btnFind.setObjectName("btnFind")
         self.gridLayout_2.addWidget(self.btnFind, 1, 1, 1, 1)
