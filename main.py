@@ -16,14 +16,14 @@ def _write_recent_files(file_lines: list[str]):
 
 
 def _get_recentfiles_filepath() -> str:
-    if this.recent_files_filepath:
-        return this.recent_files_filepath
+    if this.recent_programs_file_location:
+        return this.recent_programs_file_location
     pattern = 'recent_files.txt'
     for root, dirs, files in os.walk(os.getcwd()):
         for file in files:
             if file == pattern:
-                this.recent_files_filepath = os.path.join(root, file)
-    return this.recent_files_filepath or ""
+                this.recent_programs_file_location = os.path.join(root, file)
+    return this.recent_programs_file_location or ""
 
 
 def _get_list_of_recent_files() -> list[str]:

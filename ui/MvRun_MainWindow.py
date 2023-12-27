@@ -11,31 +11,31 @@ from PyQt6 import QtWidgets
 
 this = sys.modules[__name__]
 
-recent_files_filepath = ""
+recent_programs_file_location = ""
 
 
-def _write_recent_files(file_lines: list[str]):
-    list_filepath = _get_recentfiles_filepath()
-    line_count = min(len(file_lines), 15)
+def _write_recent_program_locations_to_file(recent_file_locations: list[str]):
+    recent_program_list_filepath = _get_recent_program_list_file_location()
+    line_count = min(len(recent_file_locations), 15)
 
-    with open(list_filepath, "w") as f:
+    with open(recent_program_list_filepath, "w") as f:
         for i in range(line_count):
-            f.write(f"{file_lines[i].strip()}\n")
+            f.write(f"{recent_file_locations[i].strip()}\n")
 
 
-def _get_recentfiles_filepath() -> str:
-    if this.recent_files_filepath:
-        return this.recent_files_filepath
+def _get_recent_program_list_file_location() -> str:
+    if this.recent_programs_file_location:
+        return this.recent_programs_file_location
     pattern = 'recent_files.txt'
     for root, dirs, files in os.walk(os.getcwd()):
         for file in files:
             if file == pattern:
-                this.recent_files_filepath = os.path.join(root, file)
-    return this.recent_files_filepath or ""
+                this.recent_programs_file_location = os.path.join(root, file)
+    return this.recent_programs_file_location or ""
 
 
 def _get_list_of_recent_files() -> list[str]:
-    list_filepath = _get_recentfiles_filepath()
+    list_filepath = _get_recent_program_list_file_location()
     if not list_filepath:
         return []
 
@@ -62,11 +62,11 @@ def _delete_lines_containing_text(file_lines: list[str], text_to_find: str) -> l
     return file_lines
 
 
-def _save_recent_file(recent_file: str):
-    recent_file_lines = _get_list_of_recent_files()
-    recent_file_lines = _delete_lines_containing_text(recent_file_lines, recent_file)
-    recent_file_lines.insert(0, recent_file)
-    _write_recent_files(recent_file_lines)
+def _save_recent_file_to_list(recent_file: str):
+    recent_files = _get_list_of_recent_files()
+    recent_files = _delete_lines_containing_text(recent_files, recent_file)
+    recent_files.insert(0, recent_file)
+    _write_recent_program_locations_to_file(recent_files)
 
 
 class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
@@ -76,10 +76,11 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self._input_rootpath = ""
-        self._output_path = ""
         self._load_settings()
         self._load_recent_files()
+        return
+
+    def _bind_events(self):
         self.btnFind.clicked.connect(self.btnFind_clicked)
         self.btnRunMicroVu.clicked.connect(self.btnRunMicroVu_clicked)
         self.cboRecentPrograms.currentTextChanged.connect(self.cboRecentPrograms_currentTextChanged)
@@ -90,14 +91,13 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         self._input_rootpath = lib.Utilities.GetStoredIniValue("Paths", "inputrootpath", "Settings")
         return
 
-    def _show_error_message(self, message: str, title: str):
+    def _show_error_message(self, message: str, title: str) -> None:
         msg_box = QMessageBox(self)
         msg_box.setIcon(QMessageBox.Icon.Critical)
         msg_box.setText(message)
         msg_box.setWindowTitle(title)
         msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
         msg_box.exec()
-        return
 
     def _show_message(self, message: str, title: str):
         msg_box = QMessageBox(self)
@@ -113,31 +113,31 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         return dialog.getOpenFileName(self, title, default_directory, "MicroVu Files (*.iwp)")
 
     def _enable_process_button(self):
-        if not self.txtJobNumber.text():
+        if not self.txtJobNumber.text().strip():
             self.btnRunMicroVu.setEnabled(False)
             return
-        if not self.txtMachineName.text():
+        if not self.txtMachineName.text().strip():
             self.btnRunMicroVu.setEnabled(False)
             return
-        if not self.txtEmployeeID.text():
+        if not self.txtEmployeeID.text().strip():
             self.btnRunMicroVu.setEnabled(False)
             return
-        if not self.txtSequenceNumber.text():
+        if not self.txtSequenceNumber.text().strip():
             self.btnRunMicroVu.setEnabled(False)
             return
-        if not self.cboRecentPrograms.currentText():
+        if not self.cboRecentPrograms.currentText().strip():
             self.btnRunMicroVu.setEnabled(False)
             return
         self.btnRunMicroVu.setEnabled(True)
         return
 
     def _load_recent_files(self):
-        recent_file_lines = _get_list_of_recent_files()
+        recent_files = _get_list_of_recent_files()
         self.cboRecentPrograms.clear()
         self.cboRecentPrograms.addItem("", "")
-        for line in recent_file_lines:
-            if base_name := os.path.basename(line).strip():
-                self.cboRecentPrograms.addItem(base_name, line)
+        for file_path in recent_files:
+            if base_name := os.path.basename(file_path).strip():
+                self.cboRecentPrograms.addItem(base_name, file_path)
         return
 
     def cboRecentPrograms_currentTextChanged(self):
@@ -145,13 +145,27 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         return
 
     def btnFind_clicked(self):
-        output_filepath, file_filter = self._get_filepath_via_dialog("Select Output Folder", self._input_rootpath)
+        output_filepath, file_filter = self._get_filepath_via_dialog("Select MicroVu File", self._input_rootpath)
         if output_filepath:
             base_name = os.path.basename(output_filepath).strip()
             self.cboRecentPrograms.insertItem(1, base_name, output_filepath)
             self.cboRecentPrograms.setCurrentIndex(1)
             self._enable_process_button()
         return
+
+    def _validate_form(self):
+        if not self.txtJobNumber.text().strip():
+            self._show_error_message("Job Number cannot be empty.", "Invalid Entry")
+            return False
+        if not self.txtMachineName.text().strip():
+            self._show_error_message("Machine Name cannot be empty.", "Invalid Entry")
+            return False
+        if not self.txtEmployeeID.text().strip():
+            self._show_error_message("Employee Number cannot be empty.", "Invalid Entry")
+            return False
+        if not self.txtSequenceNumber.text().strip():
+            self._show_error_message("Sequence Number cannot be empty.", "Invalid Entry")
+            return False
 
     def btnRunMicroVu_clicked(self):
         pass
