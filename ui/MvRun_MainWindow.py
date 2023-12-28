@@ -161,7 +161,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         if not self.txtSequenceNumber.text().strip().isdecimal() or int(self.txtSequenceNumber.text()) < 1:
             self._show_error_message("Invalid Sequence Number.", "Invalid Entry")
             return False
-        if not self.txtEmployeeID.text().strip().isdecimal() or int(self.txtSequenceNumber.text()) < 900 or int(self.txtSequenceNumber.text()) < 9999:
+        if not self.txtEmployeeID.text().strip().isdecimal() or int(self.txtEmployeeID.text()) < 900 or int(self.txtEmployeeID.text()) > 9999:
             self._show_error_message("Invalid Employee Number.", "Invalid Entry")
             return False
 
@@ -195,7 +195,9 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         return
 
     def btnRunMicroVu_clicked(self):
-        pass
+        if not self._validate_form():
+            return
+
 
 
 def main():
