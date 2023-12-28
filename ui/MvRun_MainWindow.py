@@ -1,11 +1,9 @@
 import os
 import sys
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
-from pathlib import Path
 
 import lib.Utilities
 import lib.MicroVuFileProcessor
-from lib.MicroVuFileProcessor import ProcessorException
 from ui.ui_MvRun_MainWindow import ui_MvRun_MainWindow
 from PyQt6 import QtWidgets
 
@@ -197,7 +195,6 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
     def btnRunMicroVu_clicked(self):
         if not self._validate_form():
             return
-
 
 
 def main():
