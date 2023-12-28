@@ -2,13 +2,14 @@ from PyQt6 import QtCore, QtWidgets
 
 
 class ui_MvRun_MainWindow(object):
-    def setupUi(self, MvRun_MainWindow):
-        MvRun_MainWindow.setObjectName("MvRun_MainWindow")
-        MvRun_MainWindow.resize(600, 250)
-        MvRun_MainWindow.setMinimumSize(QtCore.QSize(600, 250))
-        MvRun_MainWindow.setMaximumSize(QtCore.QSize(600, 250))
-        self.centralwidget = QtWidgets.QWidget(MvRun_MainWindow)
+    def setupUi(self, mv_run_main_window):
+        mv_run_main_window.setObjectName("MvRun_MainWindow")
+        mv_run_main_window.resize(600, 250)
+        mv_run_main_window.setMinimumSize(QtCore.QSize(600, 250))
+        mv_run_main_window.setMaximumSize(QtCore.QSize(600, 250))
+        self.centralwidget = QtWidgets.QWidget(mv_run_main_window)
         self.centralwidget.setObjectName("centralwidget")
+
         self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 10, 200, 90))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
@@ -19,6 +20,7 @@ class ui_MvRun_MainWindow(object):
         self.lblEmployeeID = QtWidgets.QLabel(self.gridLayoutWidget)
         self.lblEmployeeID.setObjectName("lblEmployeeID")
         self.gridLayout.addWidget(self.lblEmployeeID, 0, 0, 1, 1)
+
         self.txtEmployeeID = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtEmployeeID.setObjectName("txtEmployeeID")
         self.txtEmployeeID.setMinimumHeight(20)
@@ -27,6 +29,7 @@ class ui_MvRun_MainWindow(object):
         self.lblJobNumber = QtWidgets.QLabel(self.gridLayoutWidget)
         self.lblJobNumber.setObjectName("lblJobNumber")
         self.gridLayout.addWidget(self.lblJobNumber, 1, 0, 1, 1)
+
         self.txtJobNumber = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtJobNumber.setObjectName("txtJobNumber")
         self.txtJobNumber.setMinimumHeight(20)
@@ -35,6 +38,7 @@ class ui_MvRun_MainWindow(object):
         self.lblMachineName = QtWidgets.QLabel(self.gridLayoutWidget)
         self.lblMachineName.setObjectName("lblMachineName")
         self.gridLayout.addWidget(self.lblMachineName, 2, 0, 1, 1)
+
         self.txtMachineName = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtMachineName.setObjectName("txtMachineName")
         self.txtMachineName.setMinimumHeight(20)
@@ -43,6 +47,7 @@ class ui_MvRun_MainWindow(object):
         self.lblSequenceNumber = QtWidgets.QLabel(self.gridLayoutWidget)
         self.lblSequenceNumber.setObjectName("lblSequenceNumber")
         self.gridLayout.addWidget(self.lblSequenceNumber, 3, 0, 1, 1)
+
         self.txtSequenceNumber = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtSequenceNumber.setObjectName("txtSequenceNumber")
         self.txtSequenceNumber.setMinimumHeight(20)
@@ -55,6 +60,10 @@ class ui_MvRun_MainWindow(object):
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setObjectName("gridLayout_2")
 
+        self.label = QtWidgets.QLabel(self.gridLayoutWidget_2)
+        self.label.setObjectName("label")
+        self.gridLayout_2.addWidget(self.label, 0, 0, 1, 1)
+
         self.cboRecentPrograms = QtWidgets.QComboBox(self.gridLayoutWidget_2)
         self.cboRecentPrograms.setObjectName("cboRecentPrograms")
         self.gridLayout_2.addWidget(self.cboRecentPrograms, 1, 0, 1, 1)
@@ -63,25 +72,22 @@ class ui_MvRun_MainWindow(object):
         self.btnFind.setObjectName("btnFind")
         self.gridLayout_2.addWidget(self.btnFind, 1, 1, 1, 1)
 
-        self.label = QtWidgets.QLabel(self.gridLayoutWidget_2)
-        self.label.setObjectName("label")
-        self.gridLayout_2.addWidget(self.label, 0, 0, 1, 1)
         self.btnRunMicroVu = QtWidgets.QPushButton(self.centralwidget)
         self.btnRunMicroVu.setGeometry(QtCore.QRect(510, 190, 75, 23))
         self.btnRunMicroVu.setObjectName("btnRunMicroVu")
         self.btnRunMicroVu.setEnabled(False)
 
-        MvRun_MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(MvRun_MainWindow)
+        mv_run_main_window.setCentralWidget(self.centralwidget)
+        self.statusbar = QtWidgets.QStatusBar(mv_run_main_window)
         self.statusbar.setObjectName("statusbar")
-        MvRun_MainWindow.setStatusBar(self.statusbar)
+        mv_run_main_window.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MvRun_MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MvRun_MainWindow)
+        self.retranslateUi(mv_run_main_window)
+        QtCore.QMetaObject.connectSlotsByName(mv_run_main_window)
 
-    def retranslateUi(self, MvRun_MainWindow):
+    def retranslateUi(self, mv_run_main_window):
         _translate = QtCore.QCoreApplication.translate
-        MvRun_MainWindow.setWindowTitle(_translate("MvRun_MainWindow", "MvRun"))
+        mv_run_main_window.setWindowTitle(_translate("MvRun_MainWindow", "MvRun"))
         self.lblMachineName.setText(_translate("MvRun_MainWindow", "Machine Name:"))
         self.lblJobNumber.setText(_translate("MvRun_MainWindow", "Job Number:"))
         self.lblEmployeeID.setText(_translate("MvRun_MainWindow", "Employee ID:"))

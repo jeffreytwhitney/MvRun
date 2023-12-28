@@ -1,10 +1,3 @@
-V:\Inspect Programs\Micro-Vu\Approved Programs\311\Pacing\351075-020_REVA\351075-020 ITEM_6 CHECK.iwp
-V:\Inspect Programs\Micro-Vu\Approved Programs\311\Pacing\355965 REVB\355965 OP10.iwp
-V:\Inspect Programs\Micro-Vu\Approved Programs\311\Pacing\436656_REV A\OP10\436656 SIDE VIEW OP10.iwp
-V:\Inspect Programs\Micro-Vu\Approved Programs\311\Pacing\8024077-001_REVE\8024077-001.iwp
-V:\Inspect Programs\Micro-Vu\Approved Programs\311\Pacing\02072014-01_REVA\02072014-01.iwp
-V:\Inspect Programs\Micro-Vu\Approved Programs\311\Pacing\PC-00293_REVB\PC_00293.iwp
-V:\Inspect Programs\Micro-Vu\Approved Programs\311\Pacing\SA-273640 REV A\SA-273640.iwp
-V:\Inspect Programs\Micro-Vu\Approved Programs\311\Pacing\SB-273370 REV B\SB-273370.iwp
-V:\Inspect Programs\Micro-Vu\Approved Programs\311\Pacing\600130296_REV F\600130296 END VIEW.iwp
-V:\Inspect Programs\Micro-Vu\Approved Programs\311\Pacing\600130296_REV F\600130296 BOTTOM VIEW.iwp
+C:/TEST/Input/401697 REV R/401697 SIDE VIEW.iwp
+C:/TEST/Input/98-01-0001-T_RevA/98-01-0001_TOP VIEW.iwp
+C:/TEST/Input/DRW-00184-00_REV N/DRW-00184-00 SIDE1.iwp
