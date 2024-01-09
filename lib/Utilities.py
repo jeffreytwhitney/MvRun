@@ -50,3 +50,36 @@ def store_ini_value(ini_value, ini_section, ini_key, ini_filename):
         config.set(ini_section, ini_key, ini_value)
         with open(ini_file_path, "w") as conf:
             config.write(conf)
+
+
+def get_unencoded_file_lines(file_path: str) -> list[str]:
+    if not file_path:
+        return []
+    with open(file_path, "r") as f:
+        return f.readlines()
+
+
+def get_utf_encoded_file_lines(file_path: str) -> list[str]:
+    if not file_path:
+        return []
+    with open(file_path, "r", encoding='utf-16-le') as f:
+        return f.readlines()
+
+
+def get_filepath_by_name(file_name: str) -> str:
+    for root, dirs, files in os.walk('.'):
+        for file in files:
+            if file == file_name:
+                return os.path.join(root, file)
+    return ""
+
+
+def get_file_as_string(file_path: str):
+    with open(file_path, "r") as f:
+        return str(f.read())
+
+
+def write_lines_to_file(output_filepath: str, file_lines: list[str], encoding='utf-8', newline='\n'):
+    with open(output_filepath, 'w+', encoding=f'{encoding}', newline=f'{newline}') as f:
+        for line in file_lines:
+            f.write(f"{line}")

@@ -1,11 +1,13 @@
 import os
 import subprocess
 import sys
-from PyQt6.QtWidgets import QMessageBox, QFileDialog
-from lib import Utilities
-from lib import MicroVuFileProcessor
-from ui.ui_MvRun_MainWindow import ui_MvRun_MainWindow
+
 from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import QMessageBox, QFileDialog
+
+import lib
+from lib import Utilities, MicroVuFileProcessor
+from ui.ui_MvRun_MainWindow import ui_MvRun_MainWindow
 
 this = sys.modules[__name__]
 
@@ -43,12 +45,12 @@ def _get_list_of_recent_files() -> list[str]:
 
 def _get_index_containing_text(file_lines: list[str], text_to_find: str) -> int:
     return next(
-        (
-            i
-            for i, l in enumerate(file_lines)
-            if l.upper().find(text_to_find.upper()) > -1
-        ),
-        -1,
+            (
+                    i
+                    for i, l in enumerate(file_lines)
+                    if l.upper().find(text_to_find.upper()) > -1
+            ),
+            -1,
     )
 
 
@@ -95,6 +97,13 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         self.txtEmployeeID.textChanged.connect(self.txtEmployeeID_textchanged)
         self.txtMachineName.textChanged.connect(self.txtMachineName_textchanged)
         return
+
+    def _clear_form(self):
+        self.txtEmployeeID.setText("")
+        self.txtJobNumber.setText("")
+        self.txtMachineName.setText("")
+        self.txtSequenceNumber.setText("")
+        self.cboRecentPrograms.currentText("")
 
     def _load_settings(self):
         self._output_path = Utilities.get_stored_ini_value("Paths", "output_rootpath", "Settings")
@@ -253,7 +262,10 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
 
 
 def main():
+    stylesheet_filepath = lib.Utilities.get_filepath_by_name("MacOS.qss")
+    styleSheet = lib.Utilities.get_file_as_string(stylesheet_filepath)
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyleSheet(styleSheet)
     ui = MvRun_MainWindow()
     ui.show()
     sys.exit(app.exec())

@@ -1,8 +1,14 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets,QtGui
+
+import lib.Utilities
 
 
 class ui_MvRun_MainWindow(object):
     def setupUi(self, mv_run_main_window):
+        icon_filepath: str = lib.Utilities.get_filepath_by_name("MvRun.ico")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(icon_filepath), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        mv_run_main_window.setWindowIcon(icon)
         mv_run_main_window.setObjectName("MvRun_MainWindow")
         mv_run_main_window.resize(600, 250)
         mv_run_main_window.setMinimumSize(QtCore.QSize(600, 250))
@@ -12,6 +18,7 @@ class ui_MvRun_MainWindow(object):
 
         self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 10, 200, 90))
+        self.gridLayoutWidget.setMinimumWidth(400)
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setContentsMargins(0, 0, 0, 5)
@@ -24,6 +31,7 @@ class ui_MvRun_MainWindow(object):
         self.txtEmployeeID = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtEmployeeID.setObjectName("txtEmployeeID")
         self.txtEmployeeID.setMinimumHeight(20)
+        self.txtEmployeeID.setMaximumWidth(100)
         self.gridLayout.addWidget(self.txtEmployeeID, 0, 1, 1, 1)
 
         self.lblJobNumber = QtWidgets.QLabel(self.gridLayoutWidget)
@@ -33,6 +41,8 @@ class ui_MvRun_MainWindow(object):
         self.txtJobNumber = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtJobNumber.setObjectName("txtJobNumber")
         self.txtJobNumber.setMinimumHeight(20)
+        self.txtJobNumber.setMinimumWidth(200)
+
         self.gridLayout.addWidget(self.txtJobNumber, 1, 1, 1, 1)
 
         self.lblMachineName = QtWidgets.QLabel(self.gridLayoutWidget)
@@ -42,6 +52,7 @@ class ui_MvRun_MainWindow(object):
         self.txtMachineName = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtMachineName.setObjectName("txtMachineName")
         self.txtMachineName.setMinimumHeight(20)
+        self.txtMachineName.setMaximumWidth(100)
         self.gridLayout.addWidget(self.txtMachineName, 2, 1, 1, 1)
 
         self.lblSequenceNumber = QtWidgets.QLabel(self.gridLayoutWidget)
@@ -51,6 +62,7 @@ class ui_MvRun_MainWindow(object):
         self.txtSequenceNumber = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtSequenceNumber.setObjectName("txtSequenceNumber")
         self.txtSequenceNumber.setMinimumHeight(20)
+        self.txtSequenceNumber.setMaximumWidth(100)
         self.gridLayout.addWidget(self.txtSequenceNumber, 3, 1, 1, 1)
 
         self.gridLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
@@ -73,7 +85,8 @@ class ui_MvRun_MainWindow(object):
         self.gridLayout_2.addWidget(self.btnFind, 1, 1, 1, 1)
 
         self.btnRunMicroVu = QtWidgets.QPushButton(self.centralwidget)
-        self.btnRunMicroVu.setGeometry(QtCore.QRect(510, 190, 75, 23))
+        self.btnRunMicroVu.setGeometry(QtCore.QRect(470, 190, 100, 23))
+        self.btnRunMicroVu.setMinimumWidth(100)
         self.btnRunMicroVu.setObjectName("btnRunMicroVu")
         self.btnRunMicroVu.setEnabled(False)
 

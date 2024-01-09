@@ -5,7 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad24cfd2-0a5d-4132-9610-bbf0aa1cb3ff" name="Changes" comment="1.0">
+      <change afterPath="$PROJECT_DIR$/ui/MacOS.qss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/MvRun.ico" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Settings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Settings.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Utilities.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/Compile MainWindowUI.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/ui/Compile MainWindowUI.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/MvRun_MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/MvRun_MainWindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/MvRun_MainWindowUI.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/MvRun_MainWindowUI.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/prompt_text.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ui/prompt_text.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/ui_MvRun_MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/ui_MvRun_MainWindow.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,8 +120,19 @@
       <option name="project" value="LOCAL" />
       <updated>1703790708538</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="1.0">
+      <option name="closed" value="true" />
+      <created>1703792341666</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1703792341666</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.qss" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="begin" />

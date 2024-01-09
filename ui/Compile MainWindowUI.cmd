@@ -1,1 +1,1 @@
-pyuic6 -x MvRun_MainWindowUI.ui -o MainWindowTemp.py
+pyuic6 -x ./ui/MvRun_MainWindowUI.ui -o ./ui/MainWindowTemp.py
