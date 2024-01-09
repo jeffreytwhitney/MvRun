@@ -4,7 +4,7 @@ import sys
 
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
-
+import pywinctl
 import lib
 from lib import Utilities, MicroVuFileProcessor
 from ui.ui_MvRun_MainWindow import ui_MvRun_MainWindow
@@ -103,7 +103,6 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         self.txtJobNumber.setText("")
         self.txtMachineName.setText("")
         self.txtSequenceNumber.setText("")
-        self.cboRecentPrograms.currentText("")
 
     def _load_settings(self):
         self._output_path = Utilities.get_stored_ini_value("Paths", "output_rootpath", "Settings")
@@ -121,6 +120,8 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         Utilities.start_application(self._inspec_filepath)
 
     def _execute_microvu_program(self, microvu_program_path: str):
+        win = pywinctl.getWindowsWithTitle('InSpec', condition=pywinctl.Re.CONTAINS)[0]
+        win.activate()
         run_text = f"\"{self._inspec_iscmd_filepath}\" /run \"{microvu_program_path}\" /nowait"
         subprocess.Popen(run_text, stderr=subprocess.DEVNULL, shell=True)
 
@@ -253,6 +254,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
                                                                self.txtJobNumber.text(), self.txtSequenceNumber.text())
         try:
             microvu_processor.process_file()
+            self._clear_form()
         except Exception as e:
             self._show_error_message(f"Error occurred:'{e.args[0]}'.", "Runtime Error")
             return
