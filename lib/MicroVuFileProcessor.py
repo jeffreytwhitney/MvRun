@@ -2,6 +2,7 @@ import glob
 import os
 from abc import ABCMeta
 
+from lib import Utilities
 from lib.Utilities import get_utf_encoded_file_lines, write_lines_to_file
 
 
@@ -100,6 +101,20 @@ class Processor(metaclass=ABCMeta):
         return self._file_lines
 
     @property
+    def _is_smart_profile(self) -> bool:
+        return any(
+            (i for i, l in enumerate(self.file_lines)
+             if l.upper().find("OUTPUT.TXT") > 0)
+        )
+
+    @property
+    def _should_change_export_path(self) -> bool:
+        if self._is_smart_profile:
+            return False
+        change_export_paths = Utilities.get_stored_ini_value("ProcessSwitches", "change_export_path", "Settings")
+        return int(change_export_paths) == 1
+
+    @property
     def _prompt_insertion_index(self) -> int:
         insert_index: int = self._get_index_containing_text(self.file_lines, "(Name \"Created")
         if not insert_index or not self.file_lines[insert_index].startswith("Txt"):
@@ -137,6 +152,19 @@ class CoonRapidsProcessor(Processor):
             if line.find("(Name \"SEQUENCE") > -1:
                 CoonRapidsProcessor._replace_prompt_line(self.file_lines, line, "(Name \"SEQUENCE", "<S>", self.sequence_number)
 
+    def _replace_export_path(self):
+        line_idx = Processor._get_index_containing_text(self.file_lines, "AutoExpFile")
+        if not line_idx:
+            return
+        line_text = self.file_lines[line_idx]
+        current_file_path = Processor._get_node_text(line_text, "AutoExpFile", "\"")
+        current_file_name = os.path.basename(current_file_path)
+        export_root_path = Utilities.get_stored_ini_value("Paths", "export_rootpath", "Settings")
+        new_export_path = os.path.join(export_root_path, current_file_name)
+        updated_line_text = Processor._set_node_text(line_text, "(ExpFile ", new_export_path, "\"")
+        updated_line_text = Processor._set_node_text(updated_line_text, "(AutoExpFile ", new_export_path, "\"")
+        self.file_lines[line_idx] = updated_line_text
+
     def _get_instructions_count(self) -> str:
         return str(len([line for line in self.file_lines if line.find("(Name ") > 1]))
 
@@ -164,6 +192,8 @@ class CoonRapidsProcessor(Processor):
     def process_file(self) -> None:
         try:
             self._remove_invalid_character_from_beginning_of_file()
+            if self._should_change_export_path:
+                self._replace_export_path()
             self._replace_prompt_section()
             self._update_instruction_count()
             self._write_file_to_output_directory()
