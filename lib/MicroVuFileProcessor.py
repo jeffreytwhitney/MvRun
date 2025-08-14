@@ -97,6 +97,10 @@ class Processor(metaclass=ABCMeta):
         return
 
     @property
+    def sequence_count(self) -> int:
+        return sum("(NAME \"SEQUENCE" in line.upper() for line in self._file_lines)
+
+    @property
     def file_lines(self) -> list[str]:
         return self._file_lines
 

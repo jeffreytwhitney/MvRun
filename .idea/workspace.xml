@@ -5,8 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad24cfd2-0a5d-4132-9610-bbf0aa1cb3ff" name="Changes" comment="1.1">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/recent_folders.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/MvRun.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MvRun.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Settings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Settings.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/giveitatry.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/giveitatry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/Compile MainWindowUI.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/ui/Compile MainWindowUI.cmd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/MvRun_MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/MvRun_MainWindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/MvRun_MainWindowUI.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/MvRun_MainWindowUI.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/recent_files.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/ui_MvRun_MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/ui_MvRun_MainWindow.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,11 +33,22 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;jeffreytwhitney&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/jeffreytwhitney/MvRun&quot;,
+    &quot;accountId&quot;: &quot;290fb69a-b60e-41ec-af6b-331ddec9da04&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2Zu4Flv3V6oh4BdUtJfIaX9i9ZK" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -37,20 +58,23 @@
     "Batch.Compile MainWindowUI.executor": "Run",
     "Python.AutoPyToExe.executor": "Run",
     "Python.MicroVuFileProcessor.executor": "Run",
-    "Python.MvRun_MainWindow.executor": "Debug",
+    "Python.MvRun_MainWindow.executor": "Run",
+    "Python.giveitatry.executor": "Run",
     "Python.main.executor": "Run",
     "Python.scratch.executor": "Run",
     "Python.ui_MvRun_MainWindow.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true"
+    "ignore.virus.scanning.warn.message": "true",
+    "settings.editor.selected.configurable": "preferences.updates"
   }
 }]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-50da183f06c8-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.13135.95" />
+        <option value="bundled-python-sdk-03e874896e21-d902c0275401-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-252.23892.439" />
       </set>
     </attachedChunks>
   </component>
@@ -143,7 +167,15 @@
       <option name="project" value="LOCAL" />
       <updated>1704820834554</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="1.1">
+      <option name="closed" value="true" />
+      <created>1704822834463</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1704822834463</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -154,16 +186,5 @@
     <MESSAGE value="1.0" />
     <MESSAGE value="1.1" />
     <option name="LAST_COMMIT_MESSAGE" value="1.1" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/ui/MvRun_MainWindow.py</url>
-          <line>122</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

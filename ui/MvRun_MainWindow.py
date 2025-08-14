@@ -7,35 +7,35 @@ from PyQt6.QtWidgets import QMessageBox, QFileDialog
 import pywinctl
 import lib
 from lib import Utilities, MicroVuFileProcessor
-from ui.ui_MvRun_MainWindow import ui_MvRun_MainWindow
+from ui.ui_MvRun_MainWindow import Ui_MvRun_MainWindow
 
 this = sys.modules[__name__]
 
-recent_program_list_file_location = ""
+recent_program_list = ""
 
 
-def _write_recent_program_list_to_file(recent_file_locations: list[str]):
-    recent_program_list_filepath = _get_recent_program_list_file_location()
-    line_count = min(len(recent_file_locations), 15)
+def _write_recent_program_list_to_file(recent_folder_locations: list[str]):
+    recent_program_list_filepath = _get_recent_program_list()
+    line_count = min(len(recent_folder_locations), 15)
 
     with open(recent_program_list_filepath, "w") as f:
         for i in range(line_count):
-            f.write(f"{recent_file_locations[i].strip()}\n")
+            f.write(f"{recent_folder_locations[i].strip()}\n")
 
 
-def _get_recent_program_list_file_location() -> str:
-    if this.recent_program_list_file_location:
-        return this.recent_program_list_file_location
-    pattern = 'recent_files.txt'
+def _get_recent_program_list() -> str:
+    if this.recent_program_list:
+        return this.recent_program_list
+    pattern = 'recent_folders.txt'
     for root, dirs, files in os.walk(os.getcwd()):
         for file in files:
             if file == pattern:
-                this.recent_program_list_file_location = os.path.join(root, file)
-    return this.recent_program_list_file_location or ""
+                this.recent_program_list = os.path.join(root, file)
+    return this.recent_program_list or ""
 
 
-def _get_list_of_recent_files() -> list[str]:
-    list_filepath = _get_recent_program_list_file_location()
+def _get_list_of_recent_folders() -> list[str]:
+    list_filepath = _get_recent_program_list()
     if not list_filepath:
         return []
 
@@ -62,14 +62,14 @@ def _delete_lines_containing_text(file_lines: list[str], text_to_find: str) -> l
     return file_lines
 
 
-def _save_recent_file_to_list(recent_file: str):
-    recent_files = _get_list_of_recent_files()
-    recent_files = _delete_lines_containing_text(recent_files, recent_file)
-    recent_files.insert(0, recent_file)
-    _write_recent_program_list_to_file(recent_files)
+def _save_recent_folder_to_list(recent_folder: str):
+    recent_folders = _get_list_of_recent_folders()
+    recent_folders = _delete_lines_containing_text(recent_folders, recent_folder)
+    recent_folders.insert(0, recent_folder)
+    _write_recent_program_list_to_file(recent_folders)
 
 
-class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
+class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
     _input_rootpath: str
     _output_path: str
     _min_employee_number: int
@@ -80,14 +80,16 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
     _inspec_filepath: str
     _inspec_iscmd_filepath: str
 
+    # Dunder Methods
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self._load_settings()
-        self._load_recent_files()
+        self._load_recent_folders()
         self._bind_events()
         return
 
+    # Protected Methods
     def _bind_events(self):
         self.btnFind.clicked.connect(self.btnFind_clicked)
         self.btnRunMicroVu.clicked.connect(self.btnRunMicroVu_clicked)
@@ -103,48 +105,6 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         self.txtJobNumber.setText("")
         self.txtMachineName.setText("")
         self.txtSequenceNumber.setText("")
-
-    def _load_settings(self):
-        self._output_path = Utilities.get_stored_ini_value("Paths", "output_rootpath", "Settings")
-        self._input_rootpath = Utilities.get_stored_ini_value("Paths", "input_rootpath", "Settings")
-        self._min_employee_number = int(Utilities.get_stored_ini_value("MinMaxValues", "min_employee_number", "Settings"))
-        self._max_employee_number = int(Utilities.get_stored_ini_value("MinMaxValues", "max_employee_number", "Settings"))
-        self._inspec_directory = Utilities.get_stored_ini_value("Paths", "inspec_directory", "Settings")
-        self._inspec_exe_name = Utilities.get_stored_ini_value("Paths", "inspec_exe_name", "Settings")
-        self._inspec_iscmd_exe_name = Utilities.get_stored_ini_value("Paths", "iscmd_exe_name", "Settings")
-        self._inspec_filepath = os.path.join(self._inspec_directory, self._inspec_exe_name)
-        self._inspec_iscmd_filepath = os.path.join(self._inspec_directory, self._inspec_iscmd_exe_name)
-        return
-
-    def _start_inspec_application(self):
-        Utilities.start_application(self._inspec_filepath)
-
-    def _execute_microvu_program(self, microvu_program_path: str):
-        win = pywinctl.getWindowsWithTitle('InSpec', condition=pywinctl.Re.CONTAINS)[0]
-        win.activate()
-        run_text = f"\"{self._inspec_iscmd_filepath}\" /run \"{microvu_program_path}\" /nowait"
-        subprocess.Popen(run_text, stderr=subprocess.DEVNULL, shell=True)
-
-    def _show_error_message(self, message: str, title: str) -> None:
-        msg_box = QMessageBox(self)
-        msg_box.setIcon(QMessageBox.Icon.Critical)
-        msg_box.setText(message)
-        msg_box.setWindowTitle(title)
-        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
-        msg_box.exec()
-
-    def _show_message(self, message: str, title: str):
-        msg_box = QMessageBox(self)
-        msg_box.setIcon(QMessageBox.Icon.Information)
-        msg_box.setText(message)
-        msg_box.setWindowTitle(title)
-        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
-        msg_box.exec()
-        return
-
-    def _get_filepath_via_dialog(self, title, default_directory="") -> str:
-        dialog = QFileDialog()
-        return dialog.getOpenFileName(self, title, default_directory, "MicroVu Files (*.iwp)")
 
     def _enable_process_button(self):
         if not self.txtJobNumber.text().strip():
@@ -165,13 +125,55 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         self.btnRunMicroVu.setEnabled(True)
         return
 
-    def _load_recent_files(self):
-        recent_files = _get_list_of_recent_files()
+    def _execute_microvu_program(self, microvu_program_path: str):
+        win = pywinctl.getWindowsWithTitle('InSpec', condition=pywinctl.Re.CONTAINS)[0]
+        win.activate()
+        run_text = f"\"{self._inspec_iscmd_filepath}\" /run \"{microvu_program_path}\" /nowait"
+        subprocess.Popen(run_text, stderr=subprocess.DEVNULL, shell=True)
+
+    def _get_filepath_via_dialog(self, title, default_directory="") -> str:
+        dialog = QFileDialog()
+        return dialog.getExistingDirectory(self, title, default_directory, "MicroVu Files (*.iwp)")
+
+    def _load_recent_folders(self):
+        recent_files = _get_list_of_recent_folders()
         self.cboRecentPrograms.clear()
         self.cboRecentPrograms.addItem("", "")
         for file_path in recent_files:
             if base_name := os.path.basename(file_path).strip():
                 self.cboRecentPrograms.addItem(base_name, file_path)
+        return
+
+    def _load_settings(self):
+        self._output_path = Utilities.get_stored_ini_value("Paths", "output_rootpath", "Settings")
+        self._input_rootpath = Utilities.get_stored_ini_value("Paths", "input_rootpath", "Settings")
+        self._min_employee_number = int(Utilities.get_stored_ini_value("MinMaxValues", "min_employee_number", "Settings"))
+        self._max_employee_number = int(Utilities.get_stored_ini_value("MinMaxValues", "max_employee_number", "Settings"))
+        self._inspec_directory = Utilities.get_stored_ini_value("Paths", "inspec_directory", "Settings")
+        self._inspec_exe_name = Utilities.get_stored_ini_value("Paths", "inspec_exe_name", "Settings")
+        self._inspec_iscmd_exe_name = Utilities.get_stored_ini_value("Paths", "iscmd_exe_name", "Settings")
+        self._inspec_filepath = os.path.join(self._inspec_directory, self._inspec_exe_name)
+        self._inspec_iscmd_filepath = os.path.join(self._inspec_directory, self._inspec_iscmd_exe_name)
+        return
+
+    def _start_inspec_application(self):
+        Utilities.start_application(self._inspec_filepath)
+
+    def _show_error_message(self, message: str, title: str) -> None:
+        msg_box = QMessageBox(self)
+        msg_box.setIcon(QMessageBox.Icon.Critical)
+        msg_box.setText(message)
+        msg_box.setWindowTitle(title)
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg_box.exec()
+
+    def _show_message(self, message: str, title: str):
+        msg_box = QMessageBox(self)
+        msg_box.setIcon(QMessageBox.Icon.Information)
+        msg_box.setText(message)
+        msg_box.setWindowTitle(title)
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg_box.exec()
         return
 
     def _validate_form(self):
@@ -212,26 +214,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         if not Utilities.is_process_running(self._inspec_exe_name):
             self._start_inspec_application()
 
-    def txtJobNumber_textchanged(self):
-        self._enable_process_button()
-        return
-
-    def txtMachineName_textchanged(self):
-        self._enable_process_button()
-        return
-
-    def txtEmployeeID_textchanged(self):
-        self._enable_process_button()
-        return
-
-    def txtSequenceNumber_textchanged(self):
-        self._enable_process_button()
-        return
-
-    def cboRecentPrograms_currentTextChanged(self):
-        self._enable_process_button()
-        return
-
+    # Event Handlers
     def btnFind_clicked(self):
         input_filepath, file_filter = self._get_filepath_via_dialog("Select MicroVu File", self._input_rootpath)
         if input_filepath:
@@ -258,9 +241,29 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, ui_MvRun_MainWindow):
         except Exception as e:
             self._show_error_message(f"Error occurred:'{e.args[0]}'.", "Runtime Error")
             return
-        _save_recent_file_to_list(input_filepath)
+        _save_recent_folder_to_list(input_filepath)
         self._start_inspec_software()
         self._execute_microvu_program(output_filepath)
+
+    def cboRecentPrograms_currentTextChanged(self):
+        self._enable_process_button()
+        return
+
+    def txtEmployeeID_textchanged(self):
+        self._enable_process_button()
+        return
+
+    def txtJobNumber_textchanged(self):
+        self._enable_process_button()
+        return
+
+    def txtMachineName_textchanged(self):
+        self._enable_process_button()
+        return
+
+    def txtSequenceNumber_textchanged(self):
+        self._enable_process_button()
+        return
 
 
 def main():
