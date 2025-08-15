@@ -131,17 +131,32 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         run_text = f"\"{self._inspec_iscmd_filepath}\" /run \"{microvu_program_path}\" /nowait"
         subprocess.Popen(run_text, stderr=subprocess.DEVNULL, shell=True)
 
-    def _get_filepath_via_dialog(self, title, default_directory="") -> str:
+    def _get_dirpath_via_dialog(self, title, default_directory="") -> str:
         dialog = QFileDialog()
-        return dialog.getExistingDirectory(self, title, default_directory, "MicroVu Files (*.iwp)")
+        return dialog.getExistingDirectory(self, title, default_directory)
+
+    def _load_program_list(self):
+        selected_program_path = str(self.cboRecentPrograms.currentData().strip())
+        self.lstPrograms.clear()
+
+        if not os.path.exists(selected_program_path):
+            self._show_error_message(f"Directory '{self.cboRecentPrograms.currentText().strip()}' does not exist.", "File Not Found")
+            return
+        else:
+            files = files = [file for file in os.listdir(selected_program_path) if file.lower().endswith('.iwp')]
+            for file in files:
+                if file.endswith(".iwp"):
+                    self.lstPrograms.addItem(file)
+        return
 
     def _load_recent_folders(self):
-        recent_files = _get_list_of_recent_folders()
+        recent_folders = _get_list_of_recent_folders()
         self.cboRecentPrograms.clear()
         self.cboRecentPrograms.addItem("", "")
-        for file_path in recent_files:
-            if base_name := os.path.basename(file_path).strip():
-                self.cboRecentPrograms.addItem(base_name, file_path)
+        for dir_path in recent_folders:
+            dir_path = dir_path.rstrip('\r\n').rstrip('\\')
+            if dir_name := os.path.split(dir_path)[-1]:
+                self.cboRecentPrograms.addItem(dir_name, dir_path)
         return
 
     def _load_settings(self):
@@ -216,10 +231,12 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
 
     # Event Handlers
     def btnFind_clicked(self):
-        input_filepath, file_filter = self._get_filepath_via_dialog("Select MicroVu File", self._input_rootpath)
-        if input_filepath:
-            base_name = os.path.basename(input_filepath).strip()
-            self.cboRecentPrograms.insertItem(1, base_name, input_filepath)
+        if input_dirpath := self._get_dirpath_via_dialog(
+            "Select Part Number Folder", self._input_rootpath
+        ):
+            input_dirpath = input_dirpath.rstrip('\r\n').rstrip('\\')
+            dir_name = os.path.split(input_dirpath)[-1]
+            self.cboRecentPrograms.insertItem(1, dir_name, input_dirpath)
             self.cboRecentPrograms.setCurrentIndex(1)
         self._enable_process_button()
         return
@@ -246,7 +263,9 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self._execute_microvu_program(output_filepath)
 
     def cboRecentPrograms_currentTextChanged(self):
-        self._enable_process_button()
+        self._load_program_list()
+
+        # self._enable_process_button()
         return
 
     def txtEmployeeID_textchanged(self):

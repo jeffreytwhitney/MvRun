@@ -5,6 +5,7 @@ import lib.Utilities
 
 class Ui_MvRun_MainWindow(object):
     def __init__(self):
+        self.centrallayout = None
         self.lblSequenceNumber = None
         self.txtSequenceNumber = None
         self.txtMachineName = None
@@ -41,6 +42,8 @@ class Ui_MvRun_MainWindow(object):
         main_window.setWindowTitle("MvRun")
         self.centralwidget = QtWidgets.QWidget(parent=main_window)
         self.centralwidget.setObjectName("centralwidget")
+        self.centralwidget.setWindowIcon(icon)
+        self.centrallayout = QtWidgets.QGridLayout(self.centralwidget)
 
         # ---------------------------------------------------------
         # Program Search And Selection Layout
@@ -65,6 +68,7 @@ class Ui_MvRun_MainWindow(object):
         self.lblPartNumber.setObjectName("lblPartNumber")
         self.lblPartNumber.setText("Part Number:")
         self.part_number_selection_layout.addWidget(self.lblPartNumber, 0, 0, 1, 1)
+        self.part_number_selection_widget.setLayout(self.part_number_selection_layout)
 
         # ---------------------------------------------------------
         # Program List Layout
@@ -84,12 +88,6 @@ class Ui_MvRun_MainWindow(object):
         self.lstPrograms = QtWidgets.QListWidget(parent=self.program_list_widget)
         self.lstPrograms.setObjectName("lstPrograms")
         self.program_list_layout.addWidget(self.lstPrograms, 1, 0, 1, 1)
-        # item = QtWidgets.QListWidgetItem()
-        # item.setText("Program 1")
-        # self.lstPrograms.addItem(item)
-        # item = QtWidgets.QListWidgetItem()
-        # item.setText("Program 2")
-        # self.lstPrograms.addItem(item)
 
         # ---------------------------------------------------------
         # User-Entered Fields Layout
@@ -109,7 +107,7 @@ class Ui_MvRun_MainWindow(object):
 
         # Employee ID Textbox
         self.txtEmployeeID = QtWidgets.QLineEdit(parent=self.user_fields_widget)
-        self.txtEmployeeID.setMinimumSize(QtCore.QSize(200, 20))
+        self.txtEmployeeID.setMinimumSize(QtCore.QSize(100, 20))
         self.txtEmployeeID.setObjectName("txtEmployeeID")
         self.user_fields_layout.addWidget(self.txtEmployeeID, 0, 1, 1, 1)
 
@@ -121,7 +119,7 @@ class Ui_MvRun_MainWindow(object):
 
         # Job Number Textbox
         self.txtJobNumber = QtWidgets.QLineEdit(parent=self.user_fields_widget)
-        self.txtJobNumber.setMinimumSize(QtCore.QSize(200, 20))
+        self.txtJobNumber.setMinimumSize(QtCore.QSize(100, 20))
         self.txtJobNumber.setObjectName("txtJobNumber")
         self.user_fields_layout.addWidget(self.txtJobNumber, 1, 1, 1, 1)
 
@@ -152,6 +150,7 @@ class Ui_MvRun_MainWindow(object):
         # ---------------------------------------------------------
         # Run Button
         self.btnRunMicroVu = QtWidgets.QPushButton(parent=self.centralwidget)
+        grid.addWidget(self.button2, 0, 1, QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom)
         self.btnRunMicroVu.setGeometry(QtCore.QRect(470, 450, 121, 23))
         self.btnRunMicroVu.setObjectName("btnRunMicroVu")
         self.btnRunMicroVu.setText("Run MicroVu")

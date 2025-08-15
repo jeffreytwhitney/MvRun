@@ -5,17 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad24cfd2-0a5d-4132-9610-bbf0aa1cb3ff" name="Changes" comment="1.1">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/recent_folders.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/MvRun.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MvRun.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/Settings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Settings.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/giveitatry.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/giveitatry.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/Compile MainWindowUI.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/ui/Compile MainWindowUI.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/MacOS.qss" beforeDir="false" afterPath="$PROJECT_DIR$/ui/MacOS.qss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/MvRun_MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/MvRun_MainWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/MvRun_MainWindowUI.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/MvRun_MainWindowUI.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/recent_files.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/recent_folders.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ui/recent_folders.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/ui_MvRun_MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/ui_MvRun_MainWindow.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -45,6 +38,9 @@
     &quot;accountId&quot;: &quot;290fb69a-b60e-41ec-af6b-331ddec9da04&quot;
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$USER_HOME$/AppData/Local/Temp/4138145c-e634-4154-aa87-e5a45332e000_dynamiclayouts.zip.000/dynamiclayouts/dynamiclayouts.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -59,6 +55,7 @@
     "Python.AutoPyToExe.executor": "Run",
     "Python.MicroVuFileProcessor.executor": "Run",
     "Python.MvRun_MainWindow.executor": "Run",
+    "Python.dynamiclayouts.executor": "Run",
     "Python.giveitatry.executor": "Run",
     "Python.main.executor": "Run",
     "Python.scratch.executor": "Run",
@@ -175,7 +172,15 @@
       <option name="project" value="LOCAL" />
       <updated>1704822834463</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="1.1">
+      <option name="closed" value="true" />
+      <created>1755181610799</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1755181610799</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="UnknownFeatures">
