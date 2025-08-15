@@ -111,25 +111,32 @@ QHeaderView::section {
       <x>10</x>
       <y>178</y>
       <width>315</width>
-      <height>100</height>
+      <height>118</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="2" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="lblMachineName">
        <property name="text">
         <string>Machine Name:</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="lblJobNumber">
        <property name="text">
         <string>Job Number:</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="1" column="0">
+      <widget class="QLabel" name="lblEmployeeID">
+       <property name="text">
+        <string>Employee ID:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
       <widget class="QLineEdit" name="txtJobNumber">
        <property name="minimumSize">
         <size>
@@ -139,7 +146,7 @@ QHeaderView::section {
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="3" column="1">
       <widget class="QLineEdit" name="txtMachineName">
        <property name="minimumSize">
         <size>
@@ -155,7 +162,7 @@ QHeaderView::section {
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
+     <item row="1" column="1">
       <widget class="QLineEdit" name="txtEmployeeID">
        <property name="minimumSize">
         <size>
@@ -171,21 +178,7 @@ QHeaderView::section {
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="lblEmployeeID">
-       <property name="text">
-        <string>Employee ID:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="lblSequenceNumber">
-       <property name="text">
-        <string>Sequence Number:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
+     <item row="4" column="1">
       <widget class="QLineEdit" name="txtSequenceNumber">
        <property name="minimumSize">
         <size>
@@ -199,6 +192,34 @@ QHeaderView::section {
          <height>16777215</height>
         </size>
        </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="lblSequenceNumber">
+       <property name="text">
+        <string>Sequence Number:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="lblRunSetup">
+       <property name="text">
+        <string>Run/Setup:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="cboRunSetup">
+       <item>
+        <property name="text">
+         <string>Run</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Setup</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

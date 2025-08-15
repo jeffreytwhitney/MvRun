@@ -6,28 +6,29 @@ from lib import Utilities
 from lib.Utilities import get_utf_encoded_file_lines, write_lines_to_file
 
 
-def get_processor(input_filepath: str, output_filepath: str, machine_number: str,
-                  employee_id: str, job_number: str, sequence_number: str):
+def get_processor(input_filepath: str, output_filepath: str):
     return (
-            CoonRapidsProcessor(input_filepath, output_filepath, machine_number, employee_id, job_number, sequence_number)
+        CoonRapidsProcessor(input_filepath, output_filepath)
     )
 
 
 class Processor(metaclass=ABCMeta):
     _file_lines: list[str]
+    _machine_number: str
+    _employee_id: str
+    _job_number: str
+    _sequence_numbers: list[int]
+    _is_setup: bool = False
 
-    def __init__(self, input_filepath: str, output_filepath: str, machine_number: str,
-                 employee_id: str, job_number: str, sequence_number: str):
+    # Dunder Methods
+    def __init__(self, input_filepath: str, output_filepath: str):
         self.input_filepath = input_filepath
         self.output_filepath = output_filepath
         self.output_directory = os.path.dirname(self.output_filepath)
         self.output_directory_searchpath = f"{self.output_directory}//*.iwp"
-        self.machine_number = machine_number
-        self.employee_id = employee_id
-        self.job_number = job_number
-        self.sequence_number = sequence_number
         self._file_lines = get_utf_encoded_file_lines(input_filepath)
 
+    # Status Methods
     @staticmethod
     def _get_node_text(line_text: str, search_value: str, start_delimiter: str, end_delimiter: str = "") -> str:
         if not end_delimiter:
@@ -68,8 +69,8 @@ class Processor(metaclass=ABCMeta):
     @staticmethod
     def _get_index_containing_text(file_lines: list[str], text_to_find: str) -> int:
         return next(
-                (i for i, l in enumerate(file_lines)
-                 if l.upper().find(text_to_find.upper()) > 1), -1
+            (i for i, l in enumerate(file_lines)
+             if l.upper().find(text_to_find.upper()) > 1), -1
         )
 
     @staticmethod
@@ -96,14 +97,137 @@ class Processor(metaclass=ABCMeta):
             file_lines[idx] = new_line
         return
 
+    # Protected Methods
+    def _delete_all_microvu_files(self):
+        files = glob.glob(self.output_directory_searchpath)
+        for f in files:
+            os.remove(f)
+
+    def _get_instructions_count(self) -> str:
+        return str(len([line for line in self.file_lines if line.find("(Name ") > 1]))
+
+    def _remove_invalid_character_from_beginning_of_file(self):
+        first_line = self.file_lines[0]
+        first_ord = ord(first_line[0])
+        if first_line.startswith("InSpec", 1):
+            return
+        file_start_index = first_line.find("InSpec")
+        new_line = chr(first_ord) + first_line[file_start_index:]
+        self.file_lines[0] = new_line
+
+    def _replace_prompt_section(self) -> None:
+        prompt_lines = self._get_prompt_lines()
+        for line in prompt_lines:
+            if line.find("(Name \"SETUP_PROMPT") > -1:
+                insertion_index: int = self._prompt_insertion_index
+                self._insert_line_at_index(self.file_lines, insertion_index, line)
+            if line.find("(Name \"EMPLOYEE") > -1:
+                self._replace_prompt_line(self.file_lines, line, "(Name \"Employee", "<E>", self.employee_id)
+            if line.find("(Name \"JOB") > -1:
+                self._replace_prompt_line(self.file_lines, line, "(Name \"Job", "<J>", self.job_number)
+            if line.find("(Name \"MACHINE") > -1:
+                self._replace_prompt_line(self.file_lines, line, "(Name \"Machine", "<M>", self.machine_number)
+
+            if line.find("(Name \"SEQUENCE") > -1:
+                self._replace_prompt_line(self.file_lines, line, "(Name \"SEQUENCE", "<S>", self.sequence_number)
+
+    def _set_empty_export_path(self):
+        line_idx = self._get_index_containing_text(self.file_lines, "AutoExpFile")
+        if not line_idx:
+            return
+
+        line_text = self.file_lines[line_idx]
+        updated_line_text = self._set_node_text(line_text, "(ExpFile ", "", "\"")
+        updated_line_text = self._set_node_text(updated_line_text, "(AutoExpFile ", "", "\"")
+        self.file_lines[line_idx] = updated_line_text
+        return
+
+    def _set_export_path(self):
+        line_idx = self._get_index_containing_text(self.file_lines, "AutoExpFile")
+        if not line_idx:
+            return
+        line_text = self.file_lines[line_idx]
+        current_file_path = self._get_node_text(line_text, "AutoExpFile", "\"")
+        current_file_name = os.path.basename(current_file_path)
+        export_root_path = Utilities.get_stored_ini_value("Paths", "export_rootpath", "Settings")
+        new_export_path = os.path.join(export_root_path, current_file_name)
+        updated_line_text = self._set_node_text(line_text, "(ExpFile ", new_export_path, "\"")
+        updated_line_text = self._set_node_text(updated_line_text, "(AutoExpFile ", new_export_path, "\"")
+        self.file_lines[line_idx] = updated_line_text
+
+    def _update_instruction_count(self) -> None:
+        instruction_count = self._get_instructions_count()
+        idx: int = self._get_index_containing_text(self.file_lines, "AutoExpFile")
+        self.file_lines[idx] = self._set_node_text(
+            self.file_lines[idx], "(InsIdx", instruction_count, " ", ")")
+        instruction_line_idx = next((i for i, l in enumerate(self.file_lines) if l.startswith("Instructions")), 0)
+        self.file_lines[instruction_line_idx] = self._set_node_text(
+            self.file_lines[instruction_line_idx], "Instructions", instruction_count, " ")
+        return
+
+    def _write_file_to_output_directory(self):
+        if not os.path.exists(self.output_directory):
+            os.mkdir(self.output_directory)
+        self._delete_all_microvu_files()
+        write_lines_to_file(self.output_filepath, self.file_lines, encoding='utf-16-le', newline='\r\n')
+
+    # Public Methods
+    def add_sequence_number(self, sequence_number: int):
+        self._sequence_numbers.append(sequence_number)
+
+    def process_file(self) -> None:
+        raise NotImplementedError("Must be implemented by subclass")
+
+    # Public Properties
     @property
     def sequence_count(self) -> int:
         return sum("(NAME \"SEQUENCE" in line.upper() for line in self._file_lines)
 
     @property
+    def sequence_numbers(self) -> list[int]:
+        return self._sequence_numbers
+
+    @sequence_numbers.setter
+    def sequence_numbers(self, value: list[int]):
+        self._sequence_numbers = value
+
+    @property
+    def employee_id(self) -> str:
+        return self._employee_id
+
+    @employee_id.setter
+    def employee_id(self, value: str):
+        self._employee_id = value
+
+    @property
+    def is_setup(self):
+        return self._is_setup
+
+    @is_setup.setter
+    def is_setup(self, value: bool):
+        self._is_setup = value
+
+    @property
+    def job_number(self) -> str:
+        return self._job_number
+
+    @job_number.setter
+    def job_number(self, value: str):
+        self._job_number = value
+
+    @property
+    def machine_number(self) -> str:
+        return self._machine_number
+
+    @machine_number.setter
+    def machine_number(self, value: str):
+        self._machine_number = value
+
+    @property
     def file_lines(self) -> list[str]:
         return self._file_lines
 
+    # Protected Properties
     @property
     def _is_smart_profile(self) -> bool:
         return any(
@@ -131,73 +255,13 @@ class Processor(metaclass=ABCMeta):
 
 
 class CoonRapidsProcessor(Processor):
-
-    def _remove_invalid_character_from_beginning_of_file(self):
-        first_line = self.file_lines[0]
-        first_ord = ord(first_line[0])
-        if first_line.startswith("InSpec", 1):
-            return
-        file_start_index = first_line.find("InSpec")
-        new_line = chr(first_ord) + first_line[file_start_index:]
-        self.file_lines[0] = new_line
-
-    def _replace_prompt_section(self) -> None:
-        prompt_lines = CoonRapidsProcessor._get_prompt_lines()
-        for line in prompt_lines:
-            if line.find("(Name \"SETUP_PROMPT") > -1:
-                insertion_index: int = self._prompt_insertion_index
-                CoonRapidsProcessor._insert_line_at_index(self.file_lines, insertion_index, line)
-            if line.find("(Name \"EMPLOYEE") > -1:
-                CoonRapidsProcessor._replace_prompt_line(self.file_lines, line, "(Name \"Employee", "<E>", self.employee_id)
-            if line.find("(Name \"JOB") > -1:
-                CoonRapidsProcessor._replace_prompt_line(self.file_lines, line, "(Name \"Job", "<J>", self.job_number)
-            if line.find("(Name \"MACHINE") > -1:
-                CoonRapidsProcessor._replace_prompt_line(self.file_lines, line, "(Name \"Machine", "<M>", self.machine_number)
-            if line.find("(Name \"SEQUENCE") > -1:
-                CoonRapidsProcessor._replace_prompt_line(self.file_lines, line, "(Name \"SEQUENCE", "<S>", self.sequence_number)
-
-    def _replace_export_path(self):
-        line_idx = Processor._get_index_containing_text(self.file_lines, "AutoExpFile")
-        if not line_idx:
-            return
-        line_text = self.file_lines[line_idx]
-        current_file_path = Processor._get_node_text(line_text, "AutoExpFile", "\"")
-        current_file_name = os.path.basename(current_file_path)
-        export_root_path = Utilities.get_stored_ini_value("Paths", "export_rootpath", "Settings")
-        new_export_path = os.path.join(export_root_path, current_file_name)
-        updated_line_text = Processor._set_node_text(line_text, "(ExpFile ", new_export_path, "\"")
-        updated_line_text = Processor._set_node_text(updated_line_text, "(AutoExpFile ", new_export_path, "\"")
-        self.file_lines[line_idx] = updated_line_text
-
-    def _get_instructions_count(self) -> str:
-        return str(len([line for line in self.file_lines if line.find("(Name ") > 1]))
-
-    def _update_instruction_count(self) -> None:
-        instruction_count = self._get_instructions_count()
-        idx: int = CoonRapidsProcessor._get_index_containing_text(self.file_lines, "AutoExpFile")
-        self.file_lines[idx] = CoonRapidsProcessor._set_node_text(
-                self.file_lines[idx], "(InsIdx", instruction_count, " ", ")")
-        instruction_line_idx = next((i for i, l in enumerate(self.file_lines) if l.startswith("Instructions")), 0)
-        self.file_lines[instruction_line_idx] = CoonRapidsProcessor._set_node_text(
-                self.file_lines[instruction_line_idx], "Instructions", instruction_count, " ")
-        return
-
-    def _delete_all_microvu_files(self):
-        files = glob.glob(self.output_directory_searchpath)
-        for f in files:
-            os.remove(f)
-
-    def _write_file_to_output_directory(self):
-        if not os.path.exists(self.output_directory):
-            os.mkdir(self.output_directory)
-        self._delete_all_microvu_files()
-        write_lines_to_file(self.output_filepath, self.file_lines, encoding='utf-16-le', newline='\r\n')
-
     def process_file(self) -> None:
         try:
             self._remove_invalid_character_from_beginning_of_file()
-            if self._should_change_export_path:
-                self._replace_export_path()
+            if self.is_setup:
+                self._set_empty_export_path()
+            elif self._should_change_export_path:
+                self._set_export_path()
             self._replace_prompt_section()
             self._update_instruction_count()
             self._write_file_to_output_directory()

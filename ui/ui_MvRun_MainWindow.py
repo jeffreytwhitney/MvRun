@@ -1,169 +1,170 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtWidgets import QSizePolicy
 
 import lib.Utilities
 
 
 class Ui_MvRun_MainWindow(object):
-    def __init__(self):
-        self.centrallayout = None
-        self.lblSequenceNumber = None
-        self.txtSequenceNumber = None
-        self.txtMachineName = None
-        self.txtJobNumber = None
-        self.lblJobNumber = None
-        self.lblMachineName = None
-        self.txtEmployeeID = None
-        self.lblEmployeeID = None
-        self.user_fields_layout = None
-        self.user_fields_widget = None
-        self.lstPrograms = None
-        self.statusbar = None
-        self.lblProgramList = None
-        self.program_list_layout = None
-        self.lblPartNumber = None
-        self.program_list_widget = None
-        self.cboRecentPrograms = None
-        self.btnFind = None
-        self.btnRunMicroVu = None
-        self.part_number_selection_layout = None
-        self.centralwidget = None
-        self.part_number_selection_widget = None
+    main_window: QtWidgets.QMainWindow
+    centralwidget: QtWidgets.QWidget
+    centrallayout: QtWidgets.QGridLayout
+    part_number_selection_widget: QtWidgets.QWidget
+    part_number_selection_layout: QtWidgets.QGridLayout
+    btnFind: QtWidgets.QToolButton
+    lblPartNumber: QtWidgets.QLabel
+    cboRecentPrograms: QtWidgets.QComboBox
+    program_list_widget: QtWidgets.QWidget
+    program_list_layout: QtWidgets.QGridLayout
+    lblProgramList: QtWidgets.QLabel
+    lstPrograms: QtWidgets.QListWidget
+    placeholder_widget: QtWidgets.QWidget
+    user_fields_widget: QtWidgets.QWidget
+    user_fields_layout: QtWidgets.QGridLayout
+    lblRunSetup: QtWidgets.QLabel
+    cboRunSetup: QtWidgets.QComboBox
+    ue_placeholder_widget: QtWidgets.QWidget
+    lblEmployeeID: QtWidgets.QLabel
+    txtEmployeeID: QtWidgets.QLineEdit
+    lblJobNumber: QtWidgets.QLabel
+    txtJobNumber: QtWidgets.QLineEdit
+    lblMachineName: QtWidgets.QLabel
+    txtMachineName: QtWidgets.QLineEdit
+    lblSequenceNumber: QtWidgets.QLabel
+    txtSequenceNumber: QtWidgets.QLineEdit
+    btnRunMicroVu: QtWidgets.QPushButton
+    statusbar: QtWidgets.QStatusBar
 
     def setupUi(self, main_window):
         icon_filepath: str = lib.Utilities.get_filepath_by_name("MvRun.ico")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(icon_filepath), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        self.main_window = main_window
+        self.main_window.resize(600, 500)
+        self.main_window.setMinimumSize(QtCore.QSize(600, 500))
+        self.main_window.setMaximumSize(QtCore.QSize(600, 800))
+        self.main_window.setWindowTitle("MvRun")
 
-        main_window.setObjectName("main_window")
-        main_window.resize(600, 500)
-        main_window.setMinimumSize(QtCore.QSize(600, 500))
-        main_window.setMaximumSize(QtCore.QSize(600, 800))
-
-        main_window.setWindowTitle("MvRun")
-        self.centralwidget = QtWidgets.QWidget(parent=main_window)
+        self.centralwidget = QtWidgets.QWidget(parent=self.main_window)
         self.centralwidget.setObjectName("centralwidget")
         self.centralwidget.setWindowIcon(icon)
         self.centrallayout = QtWidgets.QGridLayout(self.centralwidget)
 
-        # ---------------------------------------------------------
-        # Program Search And Selection Layout
+        # Program Search And Selection ------------------------------------------------
         self.part_number_selection_widget = QtWidgets.QWidget(parent=self.centralwidget)
-        self.part_number_selection_widget.setGeometry(QtCore.QRect(10, 10, 571, 41))
-        self.part_number_selection_widget.setObjectName("part_number_selection_widget")
+        self.part_number_selection_widget.setMaximumHeight(70)
 
         self.part_number_selection_layout = QtWidgets.QGridLayout(self.part_number_selection_widget)
         self.part_number_selection_layout.setContentsMargins(0, 0, 0, 0)
-        self.part_number_selection_layout.setObjectName("part_number_selection_layout")
 
         self.btnFind = QtWidgets.QToolButton(parent=self.part_number_selection_widget)
-        self.btnFind.setObjectName("btnFind")
         self.btnFind.setText("...")
-        self.part_number_selection_layout.addWidget(self.btnFind, 1, 1, 1, 1)
-
-        self.cboRecentPrograms = QtWidgets.QComboBox(parent=self.part_number_selection_widget)
-        self.cboRecentPrograms.setObjectName("cboRecentPrograms")
-        self.part_number_selection_layout.addWidget(self.cboRecentPrograms, 1, 0, 1, 1)
+        self.part_number_selection_layout.addWidget(self.btnFind, 1, 1)
 
         self.lblPartNumber = QtWidgets.QLabel(parent=self.part_number_selection_widget)
-        self.lblPartNumber.setObjectName("lblPartNumber")
         self.lblPartNumber.setText("Part Number:")
-        self.part_number_selection_layout.addWidget(self.lblPartNumber, 0, 0, 1, 1)
+        self.part_number_selection_layout.addWidget(self.lblPartNumber, 0, 0)
+
+        self.cboRecentPrograms = QtWidgets.QComboBox(parent=self.part_number_selection_widget)
+        self.part_number_selection_layout.addWidget(self.cboRecentPrograms, 1, 0)
+
         self.part_number_selection_widget.setLayout(self.part_number_selection_layout)
+        self.centrallayout.addWidget(self.part_number_selection_widget, 0, 0)
+        # -----------------------------------------------------------------------------
 
-        # ---------------------------------------------------------
-        # Program List Layout
+        # Program List-----------------------------------------------------------------
         self.program_list_widget = QtWidgets.QWidget(parent=self.centralwidget)
-        self.program_list_widget.setGeometry(QtCore.QRect(10, 54, 261, 121))
-        self.program_list_widget.setObjectName("program_list_widget")
-
+        self.program_list_widget.setMaximumHeight(150)
         self.program_list_layout = QtWidgets.QGridLayout(self.program_list_widget)
         self.program_list_layout.setContentsMargins(0, 0, 0, 0)
-        self.program_list_layout.setObjectName("program_list_layout")
 
         self.lblProgramList = QtWidgets.QLabel(parent=self.program_list_widget)
-        self.lblProgramList.setObjectName("lblProgramList")
         self.lblProgramList.setText("Programs:")
-        self.program_list_layout.addWidget(self.lblProgramList, 0, 0, 1, 1)
+        self.program_list_layout.addWidget(self.lblProgramList, 0, 0)
 
         self.lstPrograms = QtWidgets.QListWidget(parent=self.program_list_widget)
-        self.lstPrograms.setObjectName("lstPrograms")
-        self.program_list_layout.addWidget(self.lstPrograms, 1, 0, 1, 1)
+        self.lstPrograms.setMaximumHeight(175)
+        self.lstPrograms.setMaximumWidth(200)
+        self.program_list_layout.addWidget(self.lstPrograms, 1, 0)
 
-        # ---------------------------------------------------------
-        # User-Entered Fields Layout
+        self.placeholder_widget = QtWidgets.QWidget(parent=self.program_list_widget)
+        self.program_list_layout.addWidget(self.placeholder_widget, 1, 1)
+
+        self.program_list_widget.setLayout(self.program_list_layout)
+        self.centrallayout.addWidget(self.program_list_widget, 1, 0)
+        # -----------------------------------------------------------------------------
+
+        # User-Entered Fields----------------------------------------------------------
         self.user_fields_widget = QtWidgets.QWidget(parent=self.centralwidget)
-        self.user_fields_widget.setGeometry(QtCore.QRect(10, 178, 315, 100))
-        self.user_fields_widget.setObjectName("user_fields_widget")
-
+        self.user_fields_widget.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.user_fields_layout = QtWidgets.QGridLayout(self.user_fields_widget)
         self.user_fields_layout.setContentsMargins(0, 0, 0, 0)
-        self.user_fields_layout.setObjectName("user_fields_layout")
 
-        # Employee ID Label
+        self.lblRunSetup = QtWidgets.QLabel(parent=self.centralwidget)
+        self.lblRunSetup.setText("Run/Setup:")
+        self.user_fields_layout.addWidget(self.lblRunSetup, 0, 0)
+
+        self.cboRunSetup = QtWidgets.QComboBox(parent=self.centralwidget)
+        self.cboRunSetup.addItem("Run")
+        self.cboRunSetup.addItem("Setup")
+        self.user_fields_layout.addWidget(self.cboRunSetup, 0, 1)
+
+        # hack to get the grid to look right
+        self.ue_placeholder_widget = QtWidgets.QWidget(parent=self.user_fields_widget)
+        self.ue_placeholder_widget.setMinimumWidth(370)
+        self.user_fields_layout.addWidget(self.ue_placeholder_widget, 0, 2)
+
         self.lblEmployeeID = QtWidgets.QLabel(parent=self.user_fields_widget)
-        self.lblEmployeeID.setObjectName("lblEmployeeID")
         self.lblEmployeeID.setText("Employee ID:")
-        self.user_fields_layout.addWidget(self.lblEmployeeID, 0, 0, 1, 1)
+        self.user_fields_layout.addWidget(self.lblEmployeeID, 1, 0)
 
-        # Employee ID Textbox
         self.txtEmployeeID = QtWidgets.QLineEdit(parent=self.user_fields_widget)
-        self.txtEmployeeID.setMinimumSize(QtCore.QSize(100, 20))
-        self.txtEmployeeID.setObjectName("txtEmployeeID")
-        self.user_fields_layout.addWidget(self.txtEmployeeID, 0, 1, 1, 1)
+        self.txtEmployeeID.setMaximumWidth(50)
+        self.txtEmployeeID.setMaxLength(20)
+        self.user_fields_layout.addWidget(self.txtEmployeeID, 1, 1)
 
-        # Job Number Label
         self.lblJobNumber = QtWidgets.QLabel(parent=self.user_fields_widget)
-        self.lblJobNumber.setObjectName("lblJobNumber")
         self.lblJobNumber.setText("Job Number:")
-        self.user_fields_layout.addWidget(self.lblJobNumber, 1, 0, 1, 1)
+        self.user_fields_layout.addWidget(self.lblJobNumber, 2, 0)
 
-        # Job Number Textbox
         self.txtJobNumber = QtWidgets.QLineEdit(parent=self.user_fields_widget)
-        self.txtJobNumber.setMinimumSize(QtCore.QSize(100, 20))
-        self.txtJobNumber.setObjectName("txtJobNumber")
-        self.user_fields_layout.addWidget(self.txtJobNumber, 1, 1, 1, 1)
+        self.txtJobNumber.setMaximumWidth(100)
+        self.txtJobNumber.setMaxLength(20)
+        self.user_fields_layout.addWidget(self.txtJobNumber, 2, 1)
 
-        # Machine Name Label
         self.lblMachineName = QtWidgets.QLabel(parent=self.user_fields_widget)
-        self.lblMachineName.setObjectName("lblMachineName")
         self.lblMachineName.setText("Machine Name:")
-        self.user_fields_layout.addWidget(self.lblMachineName, 2, 0, 1, 1)
+        self.user_fields_layout.addWidget(self.lblMachineName, 3, 0)
 
-        # Machine Name Textbox
         self.txtMachineName = QtWidgets.QLineEdit(parent=self.user_fields_widget)
-        self.txtMachineName.setMinimumSize(QtCore.QSize(100, 20))
-        self.txtMachineName.setObjectName("txtMachineName")
-        self.user_fields_layout.addWidget(self.txtMachineName, 2, 1, 1, 1)
+        self.txtMachineName.setMaximumWidth(100)
+        self.user_fields_layout.addWidget(self.txtMachineName, 3, 1)
 
-        # Sequence Number Label
         self.lblSequenceNumber = QtWidgets.QLabel(parent=self.user_fields_widget)
-        self.lblSequenceNumber.setObjectName("lblSequenceNumber")
-        self.lblSequenceNumber.setText("Sequence Number:")
-        self.user_fields_layout.addWidget(self.lblSequenceNumber, 3, 0, 1, 1)
+        self.lblSequenceNumber.setText("Sequence Number(s):")
+        self.user_fields_layout.addWidget(self.lblSequenceNumber, 4, 0)
 
-        # Sequence Number Textbox
         self.txtSequenceNumber = QtWidgets.QLineEdit(parent=self.user_fields_widget)
-        self.txtSequenceNumber.setMinimumSize(QtCore.QSize(100, 20))
-        self.txtSequenceNumber.setObjectName("txtSequenceNumber")
-        self.user_fields_layout.addWidget(self.txtSequenceNumber, 3, 1, 1, 1)
+        self.txtSequenceNumber.setMaximumWidth(50)
+        self.user_fields_layout.addWidget(self.txtSequenceNumber, 4, 1)
 
-        # ---------------------------------------------------------
-        # Run Button
+        self.user_fields_widget.setLayout(self.user_fields_layout)
+        self.centrallayout.addWidget(self.user_fields_widget, 2, 0)
+        # -----------------------------------------------------------------------------
+
+        # Run Button-------------------------------------------------------------------
         self.btnRunMicroVu = QtWidgets.QPushButton(parent=self.centralwidget)
-        grid.addWidget(self.button2, 0, 1, QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom)
-        self.btnRunMicroVu.setGeometry(QtCore.QRect(470, 450, 121, 23))
         self.btnRunMicroVu.setObjectName("btnRunMicroVu")
         self.btnRunMicroVu.setText("Run MicroVu")
+        self.btnRunMicroVu.setEnabled(False)
+        self.centrallayout.addWidget(self.btnRunMicroVu, 3, 0, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignBottom)
+        # -----------------------------------------------------------------------------
 
-        # ---------------------------------------------------------
-        # Status Bar
+        self.centralwidget.setLayout(self.centrallayout)
+
+        # Status Bar-------------------------------------------------------------------
         main_window.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(parent=main_window)
-        self.statusbar.setObjectName("statusbar")
         main_window.setStatusBar(self.statusbar)
-
-        # self.retranslateUi(main_window)
-        # QtCore.QMetaObject.connectSlotsByName(main_window)
 
 
 if __name__ == "__main__":

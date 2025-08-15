@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+from typing import List
 
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
@@ -45,12 +46,12 @@ def _get_list_of_recent_folders() -> list[str]:
 
 def _get_index_containing_text(file_lines: list[str], text_to_find: str) -> int:
     return next(
-            (
-                    i
-                    for i, l in enumerate(file_lines)
-                    if l.upper().find(text_to_find.upper()) > -1
-            ),
-            -1,
+        (
+            i
+            for i, l in enumerate(file_lines)
+            if l.upper().find(text_to_find.upper()) > -1
+        ),
+        -1,
     )
 
 
@@ -79,6 +80,11 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
     _inspec_iscmd_exe_name: str
     _inspec_filepath: str
     _inspec_iscmd_filepath: str
+    _multi_sequence_numbers: List[QtWidgets.QLineEdit] = []
+    _micro_vu_processor: MicroVuFileProcessor.Processor
+    _input_dirpath: str
+    _input_filepath: str
+    _output_filepath: str
 
     # Dunder Methods
     def __init__(self):
@@ -90,6 +96,15 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         return
 
     # Protected Methods
+    def _add_sequence_number_fields(self):
+        self.txtSequenceNumber2 = QtWidgets.QLineEdit(parent=self.user_fields_widget)
+        self.txtSequenceNumber2.setMaximumWidth(50)
+        self.user_fields_layout.addWidget(self.txtSequenceNumber2, 5, 1)
+        self.user_fields_widget.setLayout(self.user_fields_layout)
+        current_size = self.main_window.size()
+        self.main_window.resize(current_size.width(), current_size.height() + 25)
+        return
+
     def _bind_events(self):
         self.btnFind.clicked.connect(self.btnFind_clicked)
         self.btnRunMicroVu.clicked.connect(self.btnRunMicroVu_clicked)
@@ -98,6 +113,8 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self.txtJobNumber.textChanged.connect(self.txtJobNumber_textchanged)
         self.txtEmployeeID.textChanged.connect(self.txtEmployeeID_textchanged)
         self.txtMachineName.textChanged.connect(self.txtMachineName_textchanged)
+        self.lstPrograms.itemSelectionChanged.connect(self.program_list_item_selected)
+
         return
 
     def _clear_form(self):
@@ -119,7 +136,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         if not self.txtSequenceNumber.text().strip():
             self.btnRunMicroVu.setEnabled(False)
             return
-        if not self.cboRecentPrograms.currentText().strip():
+        if not self.lstPrograms.currentItem().text().strip():
             self.btnRunMicroVu.setEnabled(False)
             return
         self.btnRunMicroVu.setEnabled(True)
@@ -138,6 +155,9 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
     def _load_program_list(self):
         selected_program_path = str(self.cboRecentPrograms.currentData().strip())
         self.lstPrograms.clear()
+
+        if not selected_program_path:
+            return
 
         if not os.path.exists(selected_program_path):
             self._show_error_message(f"Directory '{self.cboRecentPrograms.currentText().strip()}' does not exist.", "File Not Found")
@@ -232,40 +252,48 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
     # Event Handlers
     def btnFind_clicked(self):
         if input_dirpath := self._get_dirpath_via_dialog(
-            "Select Part Number Folder", self._input_rootpath
+                "Select Part Number Folder", self._input_rootpath
         ):
             input_dirpath = input_dirpath.rstrip('\r\n').rstrip('\\')
             dir_name = os.path.split(input_dirpath)[-1]
-            self.cboRecentPrograms.insertItem(1, dir_name, input_dirpath)
-            self.cboRecentPrograms.setCurrentIndex(1)
+            exists = self.cboRecentPrograms.findText(dir_name) != -1
+            if not exists:
+                self.cboRecentPrograms.insertItem(1, dir_name, input_dirpath)
+                self.cboRecentPrograms.setCurrentIndex(1)
+            else:
+                idx = self.cboRecentPrograms.findText(dir_name)
+                self.cboRecentPrograms.setCurrentIndex(idx)
         self._enable_process_button()
         return
 
     def btnRunMicroVu_clicked(self):
-        if not self._validate_form():
-            return
-        input_filepath = str(self.cboRecentPrograms.currentData().strip())
-        if not os.path.exists(input_filepath):
-            self._show_error_message(f"File '{self.cboRecentPrograms.currentText().strip()}' does not exist.", "File Not Found")
-            return
-        output_filepath = os.path.join(self._output_path, self.cboRecentPrograms.currentText().strip())
-        microvu_processor = MicroVuFileProcessor.get_processor(input_filepath, output_filepath,
-                                                               self.txtMachineName.text(), self.txtEmployeeID.text(),
-                                                               self.txtJobNumber.text(), self.txtSequenceNumber.text())
+
         try:
-            microvu_processor.process_file()
+            self._micro_vu_processor.process_file()
             self._clear_form()
         except Exception as e:
             self._show_error_message(f"Error occurred:'{e.args[0]}'.", "Runtime Error")
             return
-        _save_recent_folder_to_list(input_filepath)
+        _save_recent_folder_to_list(self._input_filepath)
         self._start_inspec_software()
-        self._execute_microvu_program(output_filepath)
+        self._execute_microvu_program(self._output_filepath)
 
     def cboRecentPrograms_currentTextChanged(self):
         self._load_program_list()
 
         # self._enable_process_button()
+        return
+
+    def program_list_item_selected(self):
+
+        self._input_dirpath = str(self.cboRecentPrograms.currentData().strip())
+        self._input_filepath = os.path.join(self._input_dirpath, self.lstPrograms.currentItem().text().strip())
+        if not os.path.exists(self._input_dirpath):
+            self._show_error_message(f"File '{self.cboRecentPrograms.currentText().strip()}' does not exist.", "File Not Found")
+            return
+        self._output_filepath = os.path.join(self._output_path, self.cboRecentPrograms.currentText().strip())
+        self._micro_vu_processor = MicroVuFileProcessor.get_processor(self._input_filepath, self._output_filepath)
+        self._add_sequence_number_fields()
         return
 
     def txtEmployeeID_textchanged(self):
