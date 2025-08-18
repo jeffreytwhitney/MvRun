@@ -23,14 +23,21 @@ class Ui_MvRun_MainWindow(object):
     lblRunSetup: QtWidgets.QLabel
     cboRunSetup: QtWidgets.QComboBox
     ue_placeholder_widget: QtWidgets.QWidget
+
     lblEmployeeID: QtWidgets.QLabel
     txtEmployeeID: QtWidgets.QLineEdit
+    lblError_EmployeeID: QtWidgets.QLabel
+
     lblJobNumber: QtWidgets.QLabel
     txtJobNumber: QtWidgets.QLineEdit
+    lblError_JobNumber: QtWidgets.QLabel
+
     lblMachineName: QtWidgets.QLabel
     txtMachineName: QtWidgets.QLineEdit
+    lblError_MachineName: QtWidgets.QLabel
+
     lblSequenceNumber: QtWidgets.QLabel
-    txtSequenceNumber: QtWidgets.QLineEdit
+
     btnRunMicroVu: QtWidgets.QPushButton
     statusbar: QtWidgets.QStatusBar
 
@@ -118,9 +125,14 @@ class Ui_MvRun_MainWindow(object):
         self.user_fields_layout.addWidget(self.lblEmployeeID, 1, 0)
 
         self.txtEmployeeID = QtWidgets.QLineEdit(parent=self.user_fields_widget)
-        self.txtEmployeeID.setMaximumWidth(50)
+        self.txtEmployeeID.setMaximumWidth(60)
         self.txtEmployeeID.setMaxLength(20)
         self.user_fields_layout.addWidget(self.txtEmployeeID, 1, 1)
+
+        self.lblError_EmployeeID = QtWidgets.QLabel(parent=self.user_fields_widget)
+        self.lblError_EmployeeID.setText("")
+        self.lblError_EmployeeID.setStyleSheet("color: red;")
+        self.user_fields_layout.addWidget(self.lblError_EmployeeID, 1, 2)
 
         self.lblJobNumber = QtWidgets.QLabel(parent=self.user_fields_widget)
         self.lblJobNumber.setText("Job Number:")
@@ -130,6 +142,11 @@ class Ui_MvRun_MainWindow(object):
         self.txtJobNumber.setMaximumWidth(100)
         self.txtJobNumber.setMaxLength(20)
         self.user_fields_layout.addWidget(self.txtJobNumber, 2, 1)
+
+        self.lblError_JobNumber = QtWidgets.QLabel(parent=self.user_fields_widget)
+        self.lblError_JobNumber.setText("")
+        self.lblError_JobNumber.setStyleSheet("color: red;")
+        self.user_fields_layout.addWidget(self.lblError_JobNumber, 2, 2)
 
         self.lblMachineName = QtWidgets.QLabel(parent=self.user_fields_widget)
         self.lblMachineName.setText("Machine Name:")
@@ -142,10 +159,6 @@ class Ui_MvRun_MainWindow(object):
         self.lblSequenceNumber = QtWidgets.QLabel(parent=self.user_fields_widget)
         self.lblSequenceNumber.setText("Sequence Number(s):")
         self.user_fields_layout.addWidget(self.lblSequenceNumber, 4, 0)
-
-        self.txtSequenceNumber = QtWidgets.QLineEdit(parent=self.user_fields_widget)
-        self.txtSequenceNumber.setMaximumWidth(50)
-        self.user_fields_layout.addWidget(self.txtSequenceNumber, 4, 1)
 
         self.user_fields_widget.setLayout(self.user_fields_layout)
         self.centrallayout.addWidget(self.user_fields_widget, 2, 0)

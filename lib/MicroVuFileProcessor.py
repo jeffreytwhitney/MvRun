@@ -130,6 +130,10 @@ class Processor(metaclass=ABCMeta):
     def machine_number(self) -> str:
         return self._machine_number
 
+    @property
+    def microvu_program(self) -> MicroVuProgram:
+        return self._microvu_program
+
     # Protected Properties
     @property
     def _should_change_export_path(self) -> bool:

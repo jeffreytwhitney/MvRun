@@ -1,11 +1,9 @@
 import os
-import subprocess
 import sys
 from typing import List
 
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
-import pywinctl
 import lib
 from lib import Utilities, MicroVuFileProcessor
 from ui.ui_MvRun_MainWindow import Ui_MvRun_MainWindow
@@ -15,33 +13,12 @@ this = sys.modules[__name__]
 recent_program_list = ""
 
 
-def _write_recent_program_list_to_file(recent_folder_locations: list[str]):
-    recent_program_list_filepath = _get_recent_program_list()
-    line_count = min(len(recent_folder_locations), 15)
-
-    with open(recent_program_list_filepath, "w") as f:
-        for i in range(line_count):
-            f.write(f"{recent_folder_locations[i].strip()}\n")
-
-
-def _get_recent_program_list() -> str:
-    if this.recent_program_list:
-        return this.recent_program_list
-    pattern = 'recent_folders.txt'
-    for root, dirs, files in os.walk(os.getcwd()):
-        for file in files:
-            if file == pattern:
-                this.recent_program_list = os.path.join(root, file)
-    return this.recent_program_list or ""
-
-
-def _get_list_of_recent_folders() -> list[str]:
-    list_filepath = _get_recent_program_list()
-    if not list_filepath:
-        return []
-
-    with open(list_filepath, "r") as f:
-        return f.readlines()
+def _delete_lines_containing_text(file_lines: list[str], text_to_find: str) -> list[str]:
+    idx_to_delete = _get_index_containing_text(file_lines, text_to_find)
+    while idx_to_delete > -1:
+        del file_lines[idx_to_delete]
+        idx_to_delete = _get_index_containing_text(file_lines, text_to_find)
+    return file_lines
 
 
 def _get_index_containing_text(file_lines: list[str], text_to_find: str) -> int:
@@ -55,12 +32,24 @@ def _get_index_containing_text(file_lines: list[str], text_to_find: str) -> int:
     )
 
 
-def _delete_lines_containing_text(file_lines: list[str], text_to_find: str) -> list[str]:
-    idx_to_delete = _get_index_containing_text(file_lines, text_to_find)
-    while idx_to_delete > -1:
-        del file_lines[idx_to_delete]
-        idx_to_delete = _get_index_containing_text(file_lines, text_to_find)
-    return file_lines
+def _get_list_of_recent_folders() -> list[str]:
+    list_filepath = _get_recent_program_list()
+    if not list_filepath:
+        return []
+
+    with open(list_filepath, "r") as f:
+        return f.readlines()
+
+
+def _get_recent_program_list() -> str:
+    if this.recent_program_list:
+        return this.recent_program_list
+    pattern = 'recent_folders.txt'
+    for root, dirs, files in os.walk(os.getcwd()):
+        for file in files:
+            if file == pattern:
+                this.recent_program_list = os.path.join(root, file)
+    return this.recent_program_list or ""
 
 
 def _save_recent_folder_to_list(recent_folder: str):
@@ -70,17 +59,27 @@ def _save_recent_folder_to_list(recent_folder: str):
     _write_recent_program_list_to_file(recent_folders)
 
 
+def _write_recent_program_list_to_file(recent_folder_locations: list[str]):
+    recent_program_list_filepath = _get_recent_program_list()
+    line_count = min(len(recent_folder_locations), 15)
+
+    with open(recent_program_list_filepath, "w") as f:
+        for i in range(line_count):
+            f.write(f"{recent_folder_locations[i].strip()}\n")
+
+
 class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
     _input_rootpath: str
     _output_path: str
     _min_employee_number: int
     _max_employee_number: int
-    _inspec_directory: str
+    _min_job_number_length: int
+    _max_machine_name_length: int
+    _max_sequence_number: int
     _inspec_exe_name: str
-    _inspec_iscmd_exe_name: str
     _inspec_filepath: str
-    _inspec_iscmd_filepath: str
-    _multi_sequence_numbers: List[QtWidgets.QLineEdit] = []
+    _sequence_number_fields: List[QtWidgets.QLineEdit] = []
+    _sequence_number_error_labels: List[QtWidgets.QLabel] = []
     _micro_vu_processor: MicroVuFileProcessor.Processor
     _input_dirpath: str
     _input_filepath: str
@@ -93,64 +92,105 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self._load_settings()
         self._load_recent_folders()
         self._bind_events()
+        self._createSequenceField(4)
         return
 
     # Protected Methods
-    def _add_sequence_number_fields(self):
-        self.txtSequenceNumber2 = QtWidgets.QLineEdit(parent=self.user_fields_widget)
-        self.txtSequenceNumber2.setMaximumWidth(50)
-        self.user_fields_layout.addWidget(self.txtSequenceNumber2, 5, 1)
-        self.user_fields_widget.setLayout(self.user_fields_layout)
-        current_size = self.main_window.size()
-        self.main_window.resize(current_size.width(), current_size.height() + 25)
-        return
-
     def _bind_events(self):
         self.btnFind.clicked.connect(self.btnFind_clicked)
         self.btnRunMicroVu.clicked.connect(self.btnRunMicroVu_clicked)
         self.cboRecentPrograms.currentTextChanged.connect(self.cboRecentPrograms_currentTextChanged)
-        self.txtSequenceNumber.textChanged.connect(self.txtSequenceNumber_textchanged)
+        self.cboRunSetup.currentTextChanged.connect(self.cboRunSetup_currentTextChanged)
         self.txtJobNumber.textChanged.connect(self.txtJobNumber_textchanged)
         self.txtEmployeeID.textChanged.connect(self.txtEmployeeID_textchanged)
         self.txtMachineName.textChanged.connect(self.txtMachineName_textchanged)
-        self.lstPrograms.itemSelectionChanged.connect(self.program_list_item_selected)
-
+        self.lstPrograms.currentItemChanged.connect(self.lstPrograms_currentItemChanged)
         return
 
     def _clear_form(self):
         self.txtEmployeeID.setText("")
         self.txtJobNumber.setText("")
         self.txtMachineName.setText("")
-        self.txtSequenceNumber.setText("")
+        self._reset_sequence_number_fields()
+
+    def _createSequenceField(self, index):
+        txtMultiSequenceNumber = QtWidgets.QLineEdit(parent=self.user_fields_widget)
+        txtMultiSequenceNumber.setMaximumWidth(50)
+        self.user_fields_layout.addWidget(txtMultiSequenceNumber, index, 1)
+        txtMultiSequenceNumber.textChanged.connect(self.txtSequenceNumberMulti_textchanged)
+
+        errorLabel_MultiSequenceNumber = QtWidgets.QLabel(parent=self.user_fields_widget)
+        errorLabel_MultiSequenceNumber.setText("")
+        errorLabel_MultiSequenceNumber.setStyleSheet("color: red;")
+        self.user_fields_layout.addWidget(errorLabel_MultiSequenceNumber, index, 2)
+
+        self._sequence_number_fields.append(txtMultiSequenceNumber)
+        self._sequence_number_error_labels.append(errorLabel_MultiSequenceNumber)
 
     def _enable_process_button(self):
-        if not self.txtJobNumber.text().strip():
+        if len(self.txtJobNumber.text().strip()) < self._min_job_number_length:
             self.btnRunMicroVu.setEnabled(False)
             return
-        if not self.txtMachineName.text().strip():
+
+        if len(self.txtMachineName.text().strip()) < self._min_machine_name_length:
             self.btnRunMicroVu.setEnabled(False)
             return
-        if not self.txtEmployeeID.text().strip():
+
+        if (not self.txtEmployeeID.text().strip().isdecimal()
+                or int(self.txtEmployeeID.text().strip()) < self._min_employee_number
+                or int(self.txtEmployeeID.text().strip()) > self._max_employee_number):
             self.btnRunMicroVu.setEnabled(False)
             return
-        if not self.txtSequenceNumber.text().strip():
-            self.btnRunMicroVu.setEnabled(False)
-            return
+
+        for _ in self._sequence_number_fields:
+            if not _.text().strip().isdecimal():
+                self.btnRunMicroVu.setEnabled(False)
+                return
+
         if not self.lstPrograms.currentItem().text().strip():
             self.btnRunMicroVu.setEnabled(False)
             return
         self.btnRunMicroVu.setEnabled(True)
         return
 
-    def _execute_microvu_program(self, microvu_program_path: str):
-        win = pywinctl.getWindowsWithTitle('InSpec', condition=pywinctl.Re.CONTAINS)[0]
-        win.activate()
-        run_text = f"\"{self._inspec_iscmd_filepath}\" /run \"{microvu_program_path}\" /nowait"
-        subprocess.Popen(run_text, stderr=subprocess.DEVNULL, shell=True)
+    def _generate_sequence_number_fields(self):
+        self._reset_sequence_number_fields()
+        if self._is_setup():
+            self.main_window.resize(600, 500)
+            self._enable_process_button()
+            return
+
+        sequence_count = self._micro_vu_processor.microvu_program.sequence_count
+
+        if sequence_count == 1:
+            return
+
+        for i in range(1, sequence_count):
+            self._createSequenceField(i + 4)
+            current_size = self.main_window.size()
+            self.main_window.resize(current_size.width(), current_size.height() + 25)
+
+        self.user_fields_widget.setLayout(self.user_fields_layout)
+        self._enable_process_button()
+        return
+
+    def _get_sequence_number_values(self) -> list[int]:
+        sequence_count = self._micro_vu_processor.microvu_program.sequence_count
+        if self._is_setup():
+            return [0] * sequence_count
+        sequence_numbers = []
+        for i in range(len(self._sequence_number_fields)):
+            sequence_number_field = self._sequence_number_fields[i]
+            sequence_numbers.append(int(sequence_number_field.text()))
+        return sequence_numbers
 
     def _get_dirpath_via_dialog(self, title, default_directory="") -> str:
         dialog = QFileDialog()
         return dialog.getExistingDirectory(self, title, default_directory)
+
+    def _is_setup(self) -> bool:
+        selected_value = self.cboRunSetup.currentText()
+        return selected_value == "Setup"
 
     def _load_program_list(self):
         selected_program_path = str(self.cboRecentPrograms.currentData().strip())
@@ -184,15 +224,45 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self._input_rootpath = Utilities.get_stored_ini_value("Paths", "input_rootpath", "Settings")
         self._min_employee_number = int(Utilities.get_stored_ini_value("MinMaxValues", "min_employee_number", "Settings"))
         self._max_employee_number = int(Utilities.get_stored_ini_value("MinMaxValues", "max_employee_number", "Settings"))
-        self._inspec_directory = Utilities.get_stored_ini_value("Paths", "inspec_directory", "Settings")
-        self._inspec_exe_name = Utilities.get_stored_ini_value("Paths", "inspec_exe_name", "Settings")
-        self._inspec_iscmd_exe_name = Utilities.get_stored_ini_value("Paths", "iscmd_exe_name", "Settings")
-        self._inspec_filepath = os.path.join(self._inspec_directory, self._inspec_exe_name)
-        self._inspec_iscmd_filepath = os.path.join(self._inspec_directory, self._inspec_iscmd_exe_name)
+        self._min_job_number_length = int(Utilities.get_stored_ini_value("MinMaxValues", "min_job_number_length", "Settings"))
+        self._min_machine_name_length = int(Utilities.get_stored_ini_value("MinMaxValues", "min_machine_name_length", "Settings"))
+        self._max_sequence_number = int(Utilities.get_stored_ini_value("MinMaxValues", "max_sequence_number", "Settings"))
+        self._inspec_filepath = Utilities.get_stored_ini_value("Paths", "inspec_filepath", "Settings")
         return
 
-    def _start_inspec_application(self):
-        Utilities.start_application(self._inspec_filepath)
+    def _remove_sequence_number_field(self, i):
+        sequence_number_field = self._sequence_number_fields[i]
+        sequence_number_error_label = self._sequence_number_error_labels[i]
+        self.user_fields_layout.removeWidget(sequence_number_field)
+        sequence_number_field.deleteLater()
+        self.user_fields_layout.removeWidget(sequence_number_error_label)
+        sequence_number_error_label.deleteLater()
+        return
+
+    def _reset_sequence_number_fields(self):
+        if self._is_setup():
+            for i in range(len(self._sequence_number_fields)):
+                self._remove_sequence_number_field(i)
+            self._sequence_number_fields.clear()
+            self._sequence_number_error_labels.clear()
+            return
+
+        if len(self._sequence_number_fields) == 0:
+            self._createSequenceField(4)
+            return
+
+        for i in range(1, len(self._sequence_number_fields)):
+            self._remove_sequence_number_field(i)
+
+        self._sequence_number_fields = self._sequence_number_fields[:1]
+        self._sequence_number_error_labels = self._sequence_number_error_labels[:1]
+        self._sequence_number_fields[0].setText("")
+        self._sequence_number_error_labels[0].setText("")
+        self.main_window.resize(600, 500)
+        return
+
+    def _run_inspec_application(self, program_filepath: str):
+        Utilities.run_inspec(self._inspec_filepath, program_filepath)
 
     def _show_error_message(self, message: str, title: str) -> None:
         msg_box = QMessageBox(self)
@@ -212,42 +282,47 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         return
 
     def _validate_form(self):
+        form_is_valid = True
         self.txtEmployeeID.setStyleSheet("border : 1px solid black;")
         self.txtJobNumber.setStyleSheet("border : 1px solid black;")
         self.txtMachineName.setStyleSheet("border : 1px solid black;")
-        self.txtSequenceNumber.setStyleSheet("border : 1px solid black;")
+        for i in self._sequence_number_fields:
+            i.setStyleSheet("border : 1px solid black;")
 
-        if not self.txtJobNumber.text().strip():
-            self._show_error_message("Job Number cannot be empty.", "Invalid Entry")
+        if len(self.txtJobNumber.text().strip()) < self._min_job_number_length:
+            self.lblError_JobNumber.setText(f"Job Number less than {self._min_job_number_length} characters long.")
             self.txtJobNumber.setStyleSheet("border : 1px solid red;")
-            return False
-        if not self.txtMachineName.text().strip():
-            self._show_error_message("Machine Name cannot be empty.", "Invalid Entry")
-            self.txtMachineName.setStyleSheet("border : 1px solid red;")
-            return False
-        if not self.txtEmployeeID.text().strip():
-            self.txtEmployeeID.setStyleSheet("border : 1px solid red;")
-            self._show_error_message("Employee Number cannot be empty.", "Invalid Entry")
-            return False
-        if not self.txtSequenceNumber.text().strip():
-            self.txtSequenceNumber.setStyleSheet("border : 1px solid red;")
-            self._show_error_message("Sequence Number cannot be empty.", "Invalid Entry")
-            return False
-        if not self.txtSequenceNumber.text().strip().isdecimal() or int(self.txtSequenceNumber.text()) < 1:
-            self.txtSequenceNumber.setStyleSheet("border : 1px solid red;")
-            self._show_error_message("Invalid Sequence Number.", "Invalid Entry")
-            return False
-        if (not self.txtEmployeeID.text().strip().isdecimal()
-                or int(self.txtEmployeeID.text()) < self._min_employee_number
-                or int(self.txtEmployeeID.text()) > self._max_employee_number):
-            self.txtEmployeeID.setStyleSheet("border : 1px solid red;")
-            self._show_error_message("Invalid Employee Number.", "Invalid Entry")
-            return False
-        return True
+            form_is_valid = False
 
-    def _start_inspec_software(self):
-        if not Utilities.is_process_running(self._inspec_exe_name):
-            self._start_inspec_application()
+        if len(self.txtMachineName.text().strip()) < self._min_machine_name_length:
+            self.lblError_MachineName.setText(f"Machine Name less than {self._min_machine_name_length} characters long.")
+            self.txtMachineName.setStyleSheet("border : 1px solid red;")
+            form_is_valid = False
+
+        if (not self.txtEmployeeID.text().strip().isdecimal()
+                or int(self.txtEmployeeID.text().strip()) < self._min_employee_number
+                or int(self.txtEmployeeID.text().strip()) > self._max_employee_number):
+            self.txtEmployeeID.setStyleSheet("border : 1px solid red;")
+            self.lblError_EmployeeID.setText(f"Employee Number must be between {self._min_employee_number} and {self._max_employee_number}.")
+            form_is_valid = False
+
+        if not self._is_setup():
+            for idx, s in enumerate(self._sequence_number_fields):
+                if (not s.text().strip().isdecimal()
+                        or int(s.text()) < 1
+                        or int(s.text()) > self._max_sequence_number):
+                    self._sequence_number_error_labels[idx].setText(f"Sequence Number must be between 1 and {self._max_sequence_number}.")
+                    self._sequence_number_error_labels[idx].setStyleSheet("border : 1px solid red;")
+                    form_is_valid = False
+                for chk_idx in range(idx + 1, len(self._sequence_number_fields)):
+                    if self._sequence_number_error_labels[idx].text() == self._sequence_number_error_labels[chk_idx].text():
+                        self._sequence_number_error_labels[chk_idx].setText("Sequence Numbers must be unique.")
+                        self._sequence_number_error_labels[idx].setText("Sequence Numbers must be unique.")
+                        self._sequence_number_error_labels[chk_idx].setStyleSheet("border : 1px solid red;")
+                        self._sequence_number_fields[idx].setStyleSheet("border : 1px solid red;")
+                        form_is_valid = False
+
+        return form_is_valid
 
     # Event Handlers
     def btnFind_clicked(self):
@@ -267,33 +342,37 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         return
 
     def btnRunMicroVu_clicked(self):
-
+        if not self._validate_form():
+            return
         try:
-            self._micro_vu_processor.process_file()
-            self._clear_form()
+            sequence_numbers = self._get_sequence_number_values()
+            self._micro_vu_processor.process_file(self._is_setup(), self.txtEmployeeID.text().strip(),
+                                                  self.txtJobNumber.text().strip(), self.txtMachineName.text().strip(),
+                                                  sequence_numbers)
         except Exception as e:
             self._show_error_message(f"Error occurred:'{e.args[0]}'.", "Runtime Error")
             return
         _save_recent_folder_to_list(self._input_filepath)
-        self._start_inspec_software()
-        self._execute_microvu_program(self._output_filepath)
+        self._run_inspec_application(self._output_filepath)
 
-    def cboRecentPrograms_currentTextChanged(self):
+    def cboRecentPrograms_currentTextChanged(self, new_text):
+        self._clear_form()
         self._load_program_list()
-
-        # self._enable_process_button()
         return
 
-    def program_list_item_selected(self):
+    def cboRunSetup_currentTextChanged(self):
+        self._generate_sequence_number_fields()
 
-        self._input_dirpath = str(self.cboRecentPrograms.currentData().strip())
-        self._input_filepath = os.path.join(self._input_dirpath, self.lstPrograms.currentItem().text().strip())
-        if not os.path.exists(self._input_dirpath):
-            self._show_error_message(f"File '{self.cboRecentPrograms.currentText().strip()}' does not exist.", "File Not Found")
-            return
-        self._output_filepath = os.path.join(self._output_path, self.cboRecentPrograms.currentText().strip())
-        self._micro_vu_processor = MicroVuFileProcessor.get_processor(self._input_filepath, self._output_filepath)
-        self._add_sequence_number_fields()
+    def lstPrograms_currentItemChanged(self):
+        if self.lstPrograms.currentItem() is not None:
+            self._input_dirpath = str(self.cboRecentPrograms.currentData().strip())
+            self._input_filepath = os.path.join(self._input_dirpath, self.lstPrograms.currentItem().text().strip())
+            if not os.path.exists(self._input_filepath):
+                self._show_error_message(f"File '{self._input_filepath}' does not exist.", "File Not Found")
+                return
+            self._output_filepath = os.path.join(self._output_path, self.lstPrograms.currentItem().text())
+            self._micro_vu_processor = MicroVuFileProcessor.get_processor(self._input_filepath, self._output_filepath)
+            self._generate_sequence_number_fields()
         return
 
     def txtEmployeeID_textchanged(self):
@@ -308,7 +387,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self._enable_process_button()
         return
 
-    def txtSequenceNumber_textchanged(self):
+    def txtSequenceNumberMulti_textchanged(self):
         self._enable_process_button()
         return
 

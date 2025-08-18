@@ -5,35 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad24cfd2-0a5d-4132-9610-bbf0aa1cb3ff" name="Changes" comment="1.2">
-      <change afterPath="$PROJECT_DIR$/lib/MicroVuProgram.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/CommonFunctions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/110017557-B REV E/110017557-B SIDE VIEW MULTI.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/110017557-B REV E/110017557-B SIDE VIEW OP17.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/110017557-B REV E/110017557-B SIDE VIEW.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/110017557-B REV E/110017557-B TOP VIEW MULTI.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/110017557-B REV E/110017557-B TOP VIEW OP17.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/110017557-B REV E/110017557-B TOP VIEW.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/446007_REV G/446007 1ST OP PROFILE.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/446007_REV G/446007 1ST OP.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/446007_REV G/446007 DATUM A UP.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/446007_REV G/446007 DATUM F UP.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/446007_REV G/446007 END VIEW.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/446007_REV G/446007 ITEM 1 PROFILE.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/input/446007_REV G/446007 ITEM 22 PROFILE.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/test_MicroVuProgram.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/test_Processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/MvRun.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MvRun.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/input/446007 DATUM F UP.iwp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/input/446007 ITEM 1 PROFILE.iwp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/MicroVuProgram.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MicroVuProgram.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/Settings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Settings.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/446007 DATUM F UP.iwp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/giveitatry.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/giveitatry.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/prompt_text.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test/prompt_text.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/MvRun_MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/MvRun_MainWindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/recent_folders.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ui/recent_folders.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/ui_MvRun_MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/ui_MvRun_MainWindow.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,29 +53,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Batch.Compile MainWindowUI.executor&quot;: &quot;Run&quot;,
-    &quot;Python.AutoPyToExe.executor&quot;: &quot;Run&quot;,
-    &quot;Python.MicroVuFileProcessor.executor&quot;: &quot;Run&quot;,
-    &quot;Python.MicroVuProgram.executor&quot;: &quot;Run&quot;,
-    &quot;Python.MvRun_MainWindow.executor&quot;: &quot;Run&quot;,
-    &quot;Python.TestUI.executor&quot;: &quot;Run&quot;,
-    &quot;Python.dynamiclayouts.executor&quot;: &quot;Run&quot;,
-    &quot;Python.giveitatry.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.scratch.executor&quot;: &quot;Run&quot;,
-    &quot;Python.scratch_1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ui_MvRun_MainWindow.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/JTWhitney/PycharmProjects/MvRun&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.updates&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Batch.Compile MainWindowUI.executor": "Run",
+    "Python.AutoPyToExe.executor": "Run",
+    "Python.MicroVuFileProcessor.executor": "Run",
+    "Python.MicroVuProgram.executor": "Run",
+    "Python.MvRun_MainWindow.executor": "Debug",
+    "Python.TestUI.executor": "Run",
+    "Python.dynamiclayouts.executor": "Run",
+    "Python.giveitatry.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.scratch.executor": "Run",
+    "Python.scratch_1.executor": "Run",
+    "Python.ui_MvRun_MainWindow.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/JTWhitney/PycharmProjects/MvRun",
+    "settings.editor.selected.configurable": "preferences.updates"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\JTWhitney\PycharmProjects\MvRun" />
@@ -232,7 +212,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755283126450</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="1.2">
+      <option name="closed" value="true" />
+      <created>1755446368254</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1755446368254</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -244,5 +232,12 @@
     <MESSAGE value="1.1" />
     <MESSAGE value="1.2" />
     <option name="LAST_COMMIT_MESSAGE" value="1.2" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="self.lstPrograms.currentItem().text()" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

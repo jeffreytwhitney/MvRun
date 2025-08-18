@@ -20,6 +20,11 @@ class InstructionType(StrEnum):
     OPENSPLINE = 'OSpl'
     ANGLE = 'Ang'
     GAP = 'Gap'
+    PLANE = 'Pln'
+    POINTCLOUD = 'PtCld'
+    SLOT = "Slt"
+    RECTANGLE = "Rec"
+    ORING = "ORn"
 
 
 @dataclass

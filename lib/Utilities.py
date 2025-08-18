@@ -11,6 +11,12 @@ def is_process_running(process_name):
     return last_line.lower().startswith(process_name.lower())
 
 
+def run_inspec(inspec_filepath: str, program_filepath: str):
+    subprocess.run([inspec_filepath, "/run",
+                    program_filepath, "/nowait"])
+    time.sleep(3)
+
+
 def start_application(exe_filepath: str):
     os.startfile(exe_filepath)
     time.sleep(3)
