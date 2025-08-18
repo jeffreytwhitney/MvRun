@@ -12,8 +12,8 @@ def is_process_running(process_name):
 
 
 def run_inspec(inspec_filepath: str, program_filepath: str):
-    subprocess.run([inspec_filepath, "/run",
-                    program_filepath, "/nowait"])
+    subprocess.Popen([inspec_filepath, "/run",
+                      program_filepath, "/nowait"])
     time.sleep(3)
 
 

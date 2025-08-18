@@ -45,6 +45,7 @@ class MicroVuProgram:
     _is_smartprofile: bool
     _file_lines: list[str]
     _instructions: list[Instruction]
+    _is_setup: bool = False
 
     # Static Methods
     @staticmethod
@@ -137,6 +138,10 @@ class MicroVuProgram:
         updated_line_text = updated_line_text.replace("(RunSep 1)", "(RunSep 0)")
         updated_line_text = updated_line_text.replace("(ValDlm Comma)", "(ValDlm Tab)")
         updated_line_text = updated_line_text.replace("(AutoRptTemplateName \"\")", "(AutoRptTemplateName \"Classic\")")
+
+        if self._is_setup and not self.is_smartprofile:
+            updated_line_text = updated_line_text.replace("(AutoExpFileInf ((Enab 1)", "(AutoExpFileInf ((Enab 0)")
+
         self._file_lines[line_idx] = updated_line_text
 
     @property
@@ -176,6 +181,14 @@ class MicroVuProgram:
     @property
     def is_multi_part(self):
         return self.sequence_count > 1
+
+    @property
+    def is_setup(self):
+        return self._is_setup
+
+    @is_setup.setter
+    def is_setup(self, value: bool):
+        self._is_setup = value
 
     @property
     def is_smartprofile(self) -> bool:

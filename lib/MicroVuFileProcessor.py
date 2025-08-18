@@ -7,9 +7,9 @@ from lib.MicroVuProgram import MicroVuProgram
 from lib.Utilities import write_lines_to_file
 
 
-def get_processor(input_filepath: str, output_filepath: str):
+def get_processor(input_filepath: str):
     return (
-        CoonRapidsProcessor(input_filepath, output_filepath)
+        CoonRapidsProcessor(input_filepath)
     )
 
 
@@ -21,13 +21,13 @@ class Processor(metaclass=ABCMeta):
     _sequence_numbers: list[int]
     _is_setup: bool = False
     _microvu_program: MicroVuProgram
+    _output_filepath: str
+    _output_directory: str
+    _output_directory_searchpath: str
 
     # Dunder Methods
-    def __init__(self, input_filepath: str, output_filepath: str):
+    def __init__(self, input_filepath: str):
         self.input_filepath = input_filepath
-        self.output_filepath = output_filepath
-        self.output_directory = os.path.dirname(self.output_filepath)
-        self.output_directory_searchpath = f"{self.output_directory}//*.iwp"
         self._microvu_program = MicroVuProgram(input_filepath)
 
     # Status Methods
@@ -51,7 +51,7 @@ class Processor(metaclass=ABCMeta):
 
     # Protected Methods
     def _delete_all_microvu_files(self):
-        files = glob.glob(self.output_directory_searchpath)
+        files = glob.glob(self._output_directory_searchpath)
         for f in files:
             os.remove(f)
 
@@ -92,17 +92,17 @@ class Processor(metaclass=ABCMeta):
                             self._microvu_program.file_lines[microvu_sequence_prompt.line_index] = new_line
 
     def _write_file_to_output_directory(self):
-        if not os.path.exists(self.output_directory):
-            os.mkdir(self.output_directory)
+        if not os.path.exists(self._output_directory):
+            os.mkdir(self._output_directory)
         self._delete_all_microvu_files()
-        write_lines_to_file(self.output_filepath, self._microvu_program.file_lines, encoding='utf-16-le', newline='\r\n')
+        write_lines_to_file(self._output_filepath, self._microvu_program.file_lines, encoding='utf-16-le', newline='\r\n')
 
     # Public Methods
     def add_sequence_number(self, sequence_number: int):
         self._sequence_numbers.append(sequence_number)
 
     def process_file(self, is_setup: bool, machine_name: str, employee_id: str, job_number: str,
-                     sequence_numbers: list[int]) -> None:
+                     sequence_numbers: list[int], output_filepath: str) -> None:
         raise NotImplementedError("Must be implemented by subclass")
 
     # Public Properties
@@ -145,7 +145,11 @@ class Processor(metaclass=ABCMeta):
 
 class CoonRapidsProcessor(Processor):
     def process_file(self, is_setup: bool, machine_name: str, employee_id: str, job_number: str,
-                     sequence_numbers: list[int]) -> None:
+                     sequence_numbers: list[int], output_path: str) -> None:
+        self._output_filepath = output_path
+        self._output_directory = os.path.dirname(self._output_filepath)
+        self._output_directory_searchpath = f"{self._output_directory}//*.iwp"
+
         self._is_setup = is_setup
         self._machine_number = machine_name
         self._employee_id = employee_id
@@ -155,20 +159,23 @@ class CoonRapidsProcessor(Processor):
         if len(self._sequence_numbers) != self._microvu_program.sequence_count:
             raise ProcessorException("Sequence count does not match number of sequences in file.")
         try:
-            self._microvu_program.unsalt_file()
-            if self.is_setup:
-                self._microvu_program.export_filepath = ""
-            elif self._should_change_export_path:
-                export_root_path = Utilities.get_stored_ini_value("Paths", "export_rootpath", "Settings")
-                existing_export_path = self._microvu_program.export_filepath[3:]
-                new_export_path = os.path.join(export_root_path, existing_export_path)
-                self._microvu_program.export_filepath = new_export_path
-            self._replace_prompt_section()
-            self._microvu_program.update_instruction_count()
-            self._write_file_to_output_directory()
-
+            self._process_microvu()
         except Exception as e:
             raise ProcessorException(e.args[0]) from e
+
+    def _process_microvu(self):
+        self._microvu_program.is_setup = self.is_setup
+        self._microvu_program.unsalt_file()
+        if self.is_setup:
+            self._microvu_program.export_filepath = ""
+        elif self._should_change_export_path:
+            export_root_path = Utilities.get_stored_ini_value("Paths", "export_rootpath", "Settings")
+            existing_export_path = self._microvu_program.export_filepath[3:]
+            new_export_path = os.path.join(export_root_path, existing_export_path)
+            self._microvu_program.export_filepath = new_export_path
+        self._replace_prompt_section()
+        self._microvu_program.update_instruction_count()
+        self._write_file_to_output_directory()
 
 
 class ProcessorException(Exception):

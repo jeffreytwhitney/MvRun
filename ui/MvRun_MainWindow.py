@@ -1,5 +1,6 @@
 import os
 import sys
+from datetime import datetime
 from typing import List
 
 from PyQt6 import QtWidgets
@@ -41,7 +42,7 @@ def _get_list_of_recent_folders() -> list[str]:
         return f.readlines()
 
 
-def _get_recent_program_list() -> str:
+def _get_recent_program_list():
     if this.recent_program_list:
         return this.recent_program_list
     pattern = 'recent_folders.txt'
@@ -152,6 +153,11 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             return
         self.btnRunMicroVu.setEnabled(True)
         return
+
+    def _generate_output_filename(self, program_filename):
+        program_name = os.path.splitext(program_filename)[0]
+        current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+        return f"{program_name}_{current_datetime}.iwp"
 
     def _generate_sequence_number_fields(self):
         self._reset_sequence_number_fields()
@@ -345,17 +351,20 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         if not self._validate_form():
             return
         try:
+            output_filename = self._generate_output_filename(self.lstPrograms.currentItem().text().strip())
+            self._output_filepath = os.path.join(self._output_path, output_filename)
             sequence_numbers = self._get_sequence_number_values()
             self._micro_vu_processor.process_file(self._is_setup(), self.txtEmployeeID.text().strip(),
                                                   self.txtJobNumber.text().strip(), self.txtMachineName.text().strip(),
-                                                  sequence_numbers)
+                                                  sequence_numbers, self._output_filepath)
         except Exception as e:
             self._show_error_message(f"Error occurred:'{e.args[0]}'.", "Runtime Error")
             return
-        _save_recent_folder_to_list(self._input_filepath)
+        _save_recent_folder_to_list(self._input_dirpath)
         self._run_inspec_application(self._output_filepath)
 
     def cboRecentPrograms_currentTextChanged(self, new_text):
+        self._input_dirpath = str(self.cboRecentPrograms.currentData().strip())
         self._clear_form()
         self._load_program_list()
         return
@@ -365,13 +374,12 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
 
     def lstPrograms_currentItemChanged(self):
         if self.lstPrograms.currentItem() is not None:
-            self._input_dirpath = str(self.cboRecentPrograms.currentData().strip())
             self._input_filepath = os.path.join(self._input_dirpath, self.lstPrograms.currentItem().text().strip())
             if not os.path.exists(self._input_filepath):
                 self._show_error_message(f"File '{self._input_filepath}' does not exist.", "File Not Found")
                 return
-            self._output_filepath = os.path.join(self._output_path, self.lstPrograms.currentItem().text())
-            self._micro_vu_processor = MicroVuFileProcessor.get_processor(self._input_filepath, self._output_filepath)
+
+            self._micro_vu_processor = MicroVuFileProcessor.get_processor(self._input_filepath)
             self._generate_sequence_number_fields()
         return
 
