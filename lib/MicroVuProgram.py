@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-from enum import StrEnum
+from enum import Enum
 from pathlib import Path
 import re
 from lib.Utilities import get_utf_encoded_file_lines
 
 
-class InstructionType(StrEnum):
+class InstructionType(str, Enum):
     COMMAND_LINE = 'CmdLn'
     TEXT = 'Txt'
     PROMPT = 'Prmt'

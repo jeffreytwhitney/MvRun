@@ -7,10 +7,10 @@ from lib.MicroVuProgram import MicroVuProgram
 from lib.Utilities import write_lines_to_file
 
 
-def get_processor(input_filepath: str):
-    return (
-        CoonRapidsProcessor(input_filepath)
-    )
+def get_processor(input_filepath: str, is_setup: bool, machine_name: str, employee_id: str,
+                  job_number: str, sequence_numbers: list[int], output_path: str):
+    return (CoonRapidsProcessor(input_filepath, is_setup, machine_name, employee_id,
+                                job_number, sequence_numbers, output_path))
 
 
 class Processor(metaclass=ABCMeta):
@@ -26,9 +26,18 @@ class Processor(metaclass=ABCMeta):
     _output_directory_searchpath: str
 
     # Dunder Methods
-    def __init__(self, input_filepath: str):
+    def __init__(self, input_filepath: str, is_setup: bool, machine_name: str, employee_id: str, job_number: str,
+                 sequence_numbers: list[int], output_path: str):
         self.input_filepath = input_filepath
         self._microvu_program = MicroVuProgram(input_filepath)
+        self._output_filepath = output_path
+        self._output_directory = os.path.dirname(self._output_filepath)
+        self._output_directory_searchpath = f"{self._output_directory}//*.iwp"
+        self._is_setup = is_setup
+        self._machine_number = machine_name
+        self._employee_id = employee_id
+        self._job_number = job_number
+        self._sequence_numbers = sequence_numbers
 
     # Status Methods
     @staticmethod
@@ -58,24 +67,28 @@ class Processor(metaclass=ABCMeta):
     def _replace_prompt_section(self) -> None:
         prompt_lines = self._get_prompt_file_lines()
         for line in prompt_lines:
-            if line.find("(Name \"SETUP_PROMPT") > -1:
+            if line.find("(Name \"SETUP_PROMPT") > -1 and self._should_insert_prompt:
                 insertion_index: int = self._microvu_program.prompt_insertion_index
                 self._microvu_program.insert_line(insertion_index, line)
+                continue
 
             if line.find("(Name \"EMPLOYEE") > -1:
                 new_line = line.replace("<E>", self.employee_id)
                 if microvu_employee_prompt := self._microvu_program.get_instructions_by_name("EMPLOYEE")[0]:
                     self._microvu_program.file_lines[microvu_employee_prompt.line_index] = new_line
+                    continue
 
             if line.find("(Name \"JOB") > -1:
                 new_line = line.replace("<J>", self.job_number)
                 if microvu_job_prompt := self._microvu_program.get_instructions_by_name("JOB")[0]:
                     self._microvu_program.file_lines[microvu_job_prompt.line_index] = new_line
+                    continue
 
             if line.find("(Name \"MACHINE") > -1:
                 new_line = line.replace("<M>", self.machine_number)
                 if microvu_machine_prompt := self._microvu_program.get_instructions_by_name("MACHINE")[0]:
                     self._microvu_program.file_lines[microvu_machine_prompt.line_index] = new_line
+                    continue
 
             if line.find("(Name \"SEQUENCE") > -1:
                 if len(self.sequence_numbers) == 1:
@@ -83,6 +96,7 @@ class Processor(metaclass=ABCMeta):
                     new_line = new_line.replace("<I>", "")
                     if microvu_sequence_prompt := self._microvu_program.get_instructions_by_name("SEQUENCE")[0]:
                         self._microvu_program.file_lines[microvu_sequence_prompt.line_index] = new_line
+                    continue
                 elif len(self.sequence_numbers) > 1:
                     sequence_prompts = self._microvu_program.get_instructions_by_name("SEQUENCE")
                     for counter, sequence_number in enumerate(self.sequence_numbers, start=1):
@@ -90,6 +104,7 @@ class Processor(metaclass=ABCMeta):
                         new_line = new_line.replace("<I>", str(counter))
                         if microvu_sequence_prompt := sequence_prompts[counter - 1]:
                             self._microvu_program.file_lines[microvu_sequence_prompt.line_index] = new_line
+                    continue
 
     def _write_file_to_output_directory(self):
         if not os.path.exists(self._output_directory):
@@ -101,8 +116,7 @@ class Processor(metaclass=ABCMeta):
     def add_sequence_number(self, sequence_number: int):
         self._sequence_numbers.append(sequence_number)
 
-    def process_file(self, is_setup: bool, machine_name: str, employee_id: str, job_number: str,
-                     sequence_numbers: list[int], output_filepath: str) -> None:
+    def process_file(self) -> None:
         raise NotImplementedError("Must be implemented by subclass")
 
     # Public Properties
@@ -141,21 +155,15 @@ class Processor(metaclass=ABCMeta):
             return False
         change_export_paths = Utilities.get_stored_ini_value("ProcessSwitches", "change_export_path", "Settings")
         return int(change_export_paths) == 1
+    
+    @property
+    def _should_insert_prompt(self) -> bool:
+        insert_prompt = Utilities.get_stored_ini_value("ProcessSwitches", "insert_prompt", "Settings")
+        return int(insert_prompt) == 1
 
 
 class CoonRapidsProcessor(Processor):
-    def process_file(self, is_setup: bool, machine_name: str, employee_id: str, job_number: str,
-                     sequence_numbers: list[int], output_path: str) -> None:
-        self._output_filepath = output_path
-        self._output_directory = os.path.dirname(self._output_filepath)
-        self._output_directory_searchpath = f"{self._output_directory}//*.iwp"
-
-        self._is_setup = is_setup
-        self._machine_number = machine_name
-        self._employee_id = employee_id
-        self._job_number = job_number
-        self._sequence_numbers = sequence_numbers
-
+    def process_file(self) -> None:
         if len(self._sequence_numbers) != self._microvu_program.sequence_count:
             raise ProcessorException("Sequence count does not match number of sequences in file.")
         try:

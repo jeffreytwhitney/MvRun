@@ -7,6 +7,7 @@ from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
 import lib
 from lib import Utilities, MicroVuFileProcessor
+from lib.MicroVuProgram import MicroVuProgram
 from ui.ui_MvRun_MainWindow import Ui_MvRun_MainWindow
 
 this = sys.modules[__name__]
@@ -31,6 +32,13 @@ def _get_index_containing_text(file_lines: list[str], text_to_find: str) -> int:
         ),
         -1,
     )
+
+
+def _get_micro_vu_sequence_count(program_filepath: str) -> int:
+    if not os.path.exists(program_filepath):
+        return 0
+    micro_vu_program = MicroVuProgram(program_filepath)
+    return micro_vu_program.sequence_count
 
 
 def _get_list_of_recent_folders() -> list[str]:
@@ -78,13 +86,15 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
     _max_machine_name_length: int
     _max_sequence_number: int
     _inspec_exe_name: str
+    _iscmd_filepath: str
+    _inspec_filename: str
     _inspec_filepath: str
     _sequence_number_fields: List[QtWidgets.QLineEdit] = []
     _sequence_number_error_labels: List[QtWidgets.QLabel] = []
-    _micro_vu_processor: MicroVuFileProcessor.Processor
     _input_dirpath: str
     _input_filepath: str
     _output_filepath: str
+    _sequence_count: int
 
     # Dunder Methods
     def __init__(self):
@@ -163,15 +173,19 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self._reset_sequence_number_fields()
         if self._is_setup():
             self.main_window.resize(600, 500)
+            self.lblSequenceNumber.setText("")
             self._enable_process_button()
             return
 
-        sequence_count = self._micro_vu_processor.microvu_program.sequence_count
+        if self._sequence_count == 1:
+            self.lblSequenceNumber.setText("Sequence Number:")
+        elif self._sequence_count > 1:
+            self.lblSequenceNumber.setText("Sequence Numbers:")
 
-        if sequence_count == 1:
+        if self._sequence_count == 1:
             return
 
-        for i in range(1, sequence_count):
+        for i in range(1, self._sequence_count):
             self._createSequenceField(i + 4)
             current_size = self.main_window.size()
             self.main_window.resize(current_size.width(), current_size.height() + 25)
@@ -181,9 +195,8 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         return
 
     def _get_sequence_number_values(self) -> list[int]:
-        sequence_count = self._micro_vu_processor.microvu_program.sequence_count
         if self._is_setup():
-            return [0] * sequence_count
+            return [0] * self._sequence_count
         sequence_numbers = []
         for i in range(len(self._sequence_number_fields)):
             sequence_number_field = self._sequence_number_fields[i]
@@ -234,6 +247,8 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self._min_machine_name_length = int(Utilities.get_stored_ini_value("MinMaxValues", "min_machine_name_length", "Settings"))
         self._max_sequence_number = int(Utilities.get_stored_ini_value("MinMaxValues", "max_sequence_number", "Settings"))
         self._inspec_filepath = Utilities.get_stored_ini_value("Paths", "inspec_filepath", "Settings")
+        self._inspec_filename = Utilities.get_stored_ini_value("Paths", "inspec_filename", "Settings")
+        self._iscmd_filepath = Utilities.get_stored_ini_value("Paths", "iscmd_filepath", "Settings")
         return
 
     def _remove_sequence_number_field(self, i):
@@ -244,6 +259,19 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self.user_fields_layout.removeWidget(sequence_number_error_label)
         sequence_number_error_label.deleteLater()
         return
+
+    def _reset_form_errors(self):
+        self.txtEmployeeID.setStyleSheet("border : 1px solid black;")
+        self.txtJobNumber.setStyleSheet("border : 1px solid black;")
+        self.txtMachineName.setStyleSheet("border : 1px solid black;")
+        for i in self._sequence_number_fields:
+            i.setStyleSheet("border : 1px solid black;")
+        self.lblError_EmployeeID.setText("")
+        self.lblError_JobNumber.setText("")
+        self.lblError_MachineName.setText("")
+        for i in self._sequence_number_error_labels:
+            i.setText("")
+            i.setStyleSheet("color: black;")
 
     def _reset_sequence_number_fields(self):
         if self._is_setup():
@@ -267,9 +295,6 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self.main_window.resize(600, 500)
         return
 
-    def _run_inspec_application(self, program_filepath: str):
-        Utilities.run_inspec(self._inspec_filepath, program_filepath)
-
     def _show_error_message(self, message: str, title: str) -> None:
         msg_box = QMessageBox(self)
         msg_box.setIcon(QMessageBox.Icon.Critical)
@@ -289,11 +314,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
 
     def _validate_form(self):
         form_is_valid = True
-        self.txtEmployeeID.setStyleSheet("border : 1px solid black;")
-        self.txtJobNumber.setStyleSheet("border : 1px solid black;")
-        self.txtMachineName.setStyleSheet("border : 1px solid black;")
-        for i in self._sequence_number_fields:
-            i.setStyleSheet("border : 1px solid black;")
+        self._reset_form_errors()
 
         if len(self.txtJobNumber.text().strip()) < self._min_job_number_length:
             self.lblError_JobNumber.setText(f"Job Number less than {self._min_job_number_length} characters long.")
@@ -313,20 +334,29 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             form_is_valid = False
 
         if not self._is_setup():
+            # Check for valid sequence numbers
             for idx, s in enumerate(self._sequence_number_fields):
                 if (not s.text().strip().isdecimal()
                         or int(s.text()) < 1
                         or int(s.text()) > self._max_sequence_number):
-                    self._sequence_number_error_labels[idx].setText(f"Sequence Number must be between 1 and {self._max_sequence_number}.")
+                    self._sequence_number_error_labels[
+                        idx].setText(f"Sequence Number must be between 1 and {self._max_sequence_number}.")
                     self._sequence_number_error_labels[idx].setStyleSheet("border : 1px solid red;")
                     form_is_valid = False
-                for chk_idx in range(idx + 1, len(self._sequence_number_fields)):
-                    if self._sequence_number_error_labels[idx].text() == self._sequence_number_error_labels[chk_idx].text():
-                        self._sequence_number_error_labels[chk_idx].setText("Sequence Numbers must be unique.")
-                        self._sequence_number_error_labels[idx].setText("Sequence Numbers must be unique.")
-                        self._sequence_number_error_labels[chk_idx].setStyleSheet("border : 1px solid red;")
-                        self._sequence_number_fields[idx].setStyleSheet("border : 1px solid red;")
-                        form_is_valid = False
+
+            # Check for duplicate sequence numbers
+            if self._sequence_count > 1:
+                for idx, s in enumerate(self._sequence_number_fields):
+                    current_sequence_number = int(s.text())
+                    for dup_idx in range(idx + 1, len(self._sequence_number_fields)):
+                        if current_sequence_number == int(self._sequence_number_fields[dup_idx].text()):
+                            if self._sequence_number_error_labels[idx].text() == "":
+                                self._sequence_number_error_labels[idx].setText("Sequence Numbers must be unique.")
+                                self._sequence_number_fields[idx].setStyleSheet("border : 1px solid red;")
+                            if self._sequence_number_error_labels[dup_idx].text() == "":
+                                self._sequence_number_error_labels[dup_idx].setText("Sequence Numbers must be unique.")
+                                self._sequence_number_fields[dup_idx].setStyleSheet("border : 1px solid red;")
+                            form_is_valid = False
 
         return form_is_valid
 
@@ -354,14 +384,19 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             output_filename = self._generate_output_filename(self.lstPrograms.currentItem().text().strip())
             self._output_filepath = os.path.join(self._output_path, output_filename)
             sequence_numbers = self._get_sequence_number_values()
-            self._micro_vu_processor.process_file(self._is_setup(), self.txtEmployeeID.text().strip(),
-                                                  self.txtJobNumber.text().strip(), self.txtMachineName.text().strip(),
-                                                  sequence_numbers, self._output_filepath)
+            micro_vu_processor = MicroVuFileProcessor.get_processor(self._input_filepath, self._is_setup(),
+                                                                    self.txtMachineName.text().strip(),
+                                                                    self.txtEmployeeID.text().strip(),
+                                                                    self.txtJobNumber.text().strip(),
+                                                                    sequence_numbers,
+                                                                    self._output_filepath)
+
+            micro_vu_processor.process_file()
         except Exception as e:
             self._show_error_message(f"Error occurred:'{e.args[0]}'.", "Runtime Error")
             return
         _save_recent_folder_to_list(self._input_dirpath)
-        self._run_inspec_application(self._output_filepath)
+        Utilities.execute_micro_vu_program(self._iscmd_filepath, self._inspec_filepath, self._inspec_filename, self._output_filepath)
 
     def cboRecentPrograms_currentTextChanged(self, new_text):
         self._input_dirpath = str(self.cboRecentPrograms.currentData().strip())
@@ -378,8 +413,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             if not os.path.exists(self._input_filepath):
                 self._show_error_message(f"File '{self._input_filepath}' does not exist.", "File Not Found")
                 return
-
-            self._micro_vu_processor = MicroVuFileProcessor.get_processor(self._input_filepath)
+            self._sequence_count = _get_micro_vu_sequence_count(self._input_filepath)
             self._generate_sequence_number_fields()
         return
 

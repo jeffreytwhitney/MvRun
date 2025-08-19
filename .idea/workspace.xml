@@ -5,13 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad24cfd2-0a5d-4132-9610-bbf0aa1cb3ff" name="Changes" comment="1.2">
+      <change afterPath="$PROJECT_DIR$/autopytoexe settings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MvRun.ico" beforeDir="false" afterPath="$PROJECT_DIR$/MvRun.ico" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/MicroVuProgram.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MicroVuProgram.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Settings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Settings.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/Utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Utilities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/MacOS.qss" beforeDir="false" afterPath="$PROJECT_DIR$/ui/MacOS.qss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/MvRun.ico" beforeDir="false" afterPath="$PROJECT_DIR$/ui/MvRun.ico" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/MvRun_MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/MvRun_MainWindow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/recent_folders.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ui/recent_folders.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/ui_MvRun_MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/ui_MvRun_MainWindow.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +60,7 @@
     "Batch.Compile MainWindowUI.executor": "Run",
     "Python.AutoPyToExe.executor": "Run",
     "Python.MicroVuFileProcessor.executor": "Run",
-    "Python.MicroVuProgram.executor": "Run",
+    "Python.MicroVuProgram.executor": "Debug",
     "Python.MvRun_MainWindow.executor": "Run",
     "Python.TestUI.executor": "Run",
     "Python.dynamiclayouts.executor": "Run",
@@ -226,7 +230,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755539956317</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="1.2">
+      <option name="closed" value="true" />
+      <created>1755545503632</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1755545503632</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -238,12 +250,5 @@
     <MESSAGE value="1.1" />
     <MESSAGE value="1.2" />
     <option name="LAST_COMMIT_MESSAGE" value="1.2" />
-  </component>
-  <component name="XDebuggerManager">
-    <watches-manager>
-      <configuration name="PythonConfigurationType">
-        <watch expression="self.lstPrograms.currentItem().text()" language="Python" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

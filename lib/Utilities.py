@@ -4,22 +4,19 @@ import subprocess
 import time
 
 
-def is_process_running(process_name):
+def _is_process_running(process_name):
     call = 'TASKLIST', '/FI', f'imagename eq {process_name}'
     output = subprocess.check_output(call).decode()
     last_line = output.strip().split('\r\n')[-1]
     return last_line.lower().startswith(process_name.lower())
 
 
-def run_inspec(inspec_filepath: str, program_filepath: str):
-    subprocess.Popen([inspec_filepath, "/run",
+def execute_micro_vu_program(iscmd_filepath: str, inspec_filepath, inspec_filename, program_filepath: str):
+    if not _is_process_running(inspec_filename):
+        subprocess.Popen([inspec_filepath])
+        time.sleep(3)
+    subprocess.Popen([iscmd_filepath, "/run",
                       program_filepath, "/nowait"])
-    time.sleep(3)
-
-
-def start_application(exe_filepath: str):
-    os.startfile(exe_filepath)
-    time.sleep(3)
 
 
 def get_ini_file_path(ini_file_name):
@@ -46,16 +43,13 @@ def store_ini_value(ini_value, ini_section, ini_key, ini_filename):
     config = configparser.ConfigParser()
     if not os.path.exists(ini_file_path):
         config.add_section(ini_section)
-        config.set(ini_section, ini_key, ini_value)
-        with open(ini_file_path, "w") as conf:
-            config.write(conf)
     else:
         if not config.has_section(ini_section):
             config.add_section(ini_section)
         config.read(ini_file_path)
-        config.set(ini_section, ini_key, ini_value)
-        with open(ini_file_path, "w") as conf:
-            config.write(conf)
+    config.set(ini_section, ini_key, ini_value)
+    with open(ini_file_path, "w") as conf:
+        config.write(conf)
 
 
 def get_unencoded_file_lines(file_path: str) -> list[str]:

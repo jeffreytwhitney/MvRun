@@ -45,11 +45,13 @@ class Ui_MvRun_MainWindow(object):
         icon_filepath: str = lib.Utilities.get_filepath_by_name("MvRun.ico")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(icon_filepath), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+
         self.main_window = main_window
         self.main_window.resize(600, 500)
         self.main_window.setMinimumSize(QtCore.QSize(600, 500))
         self.main_window.setMaximumSize(QtCore.QSize(600, 800))
         self.main_window.setWindowTitle("MvRun")
+        self.main_window.setWindowIcon(icon)
 
         self.centralwidget = QtWidgets.QWidget(parent=self.main_window)
         self.centralwidget.setObjectName("centralwidget")
@@ -156,8 +158,13 @@ class Ui_MvRun_MainWindow(object):
         self.txtMachineName.setMaximumWidth(100)
         self.user_fields_layout.addWidget(self.txtMachineName, 3, 1)
 
+        self.lblError_MachineName = QtWidgets.QLabel(parent=self.user_fields_widget)
+        self.lblError_MachineName.setText("")
+        self.lblError_MachineName.setStyleSheet("color: red;")
+        self.user_fields_layout.addWidget(self.lblError_JobNumber, 3, 2)
+
         self.lblSequenceNumber = QtWidgets.QLabel(parent=self.user_fields_widget)
-        self.lblSequenceNumber.setText("Sequence Number(s):")
+        self.lblSequenceNumber.setText("Sequence Number:")
         self.user_fields_layout.addWidget(self.lblSequenceNumber, 4, 0)
 
         self.user_fields_widget.setLayout(self.user_fields_layout)
