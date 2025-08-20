@@ -56,7 +56,7 @@ class Ui_MvRun_MainWindow(object):
         self.main_window.resize(600, 500)
         self.main_window.setMinimumSize(QtCore.QSize(600, 500))
         self.main_window.setMaximumSize(QtCore.QSize(600, 800))
-        self.main_window.setWindowTitle("MvRun")
+        self.main_window.setWindowTitle("Mv-Run")
         self.main_window.setWindowIcon(icon)
 
         self.centralwidget = QtWidgets.QWidget(parent=self.main_window)
