@@ -103,7 +103,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self._load_settings()
         self._load_recent_folders()
         self._bind_events()
-        self._createSequenceField(4)
+        self._createSequenceField(4 - self.switch_run_setup_field_offset)
         return
 
     # Protected Methods
@@ -111,7 +111,8 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self.btnFind.clicked.connect(self.btnFind_clicked)
         self.btnRunMicroVu.clicked.connect(self.btnRunMicroVu_clicked)
         self.cboRecentPrograms.currentTextChanged.connect(self.cboRecentPrograms_currentTextChanged)
-        self.cboRunSetup.currentTextChanged.connect(self.cboRunSetup_currentTextChanged)
+        if self.switch_show_run_setup:
+            self.cboRunSetup.currentTextChanged.connect(self.cboRunSetup_currentTextChanged)
         self.txtJobNumber.textChanged.connect(self.txtJobNumber_textchanged)
         self.txtEmployeeID.textChanged.connect(self.txtEmployeeID_textchanged)
         self.txtMachineName.textChanged.connect(self.txtMachineName_textchanged)
@@ -170,6 +171,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         return f"{program_name}_{current_datetime}.iwp"
 
     def _generate_sequence_number_fields(self):
+        starting_index = 4 - self.switch_run_setup_field_offset
         self._reset_sequence_number_fields()
         if self._is_setup():
             self.main_window.resize(600, 500)
@@ -186,7 +188,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             return
 
         for i in range(1, self._sequence_count):
-            self._createSequenceField(i + 4)
+            self._createSequenceField(i + starting_index)
             current_size = self.main_window.size()
             self.main_window.resize(current_size.width(), current_size.height() + 25)
 
@@ -208,6 +210,8 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         return dialog.getExistingDirectory(self, title, default_directory)
 
     def _is_setup(self) -> bool:
+        if not self.switch_show_run_setup:
+            return False
         selected_value = self.cboRunSetup.currentText()
         return selected_value == "Setup"
 
@@ -282,7 +286,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             return
 
         if len(self._sequence_number_fields) == 0:
-            self._createSequenceField(4)
+            self._createSequenceField(4 - self.switch_run_setup_field_offset)
             return
 
         for i in range(1, len(self._sequence_number_fields)):

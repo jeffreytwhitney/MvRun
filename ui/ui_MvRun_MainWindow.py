@@ -2,9 +2,12 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QSizePolicy
 
 import lib.Utilities
+from lib import Utilities
 
 
 class Ui_MvRun_MainWindow(object):
+    switch_show_run_setup: bool
+    switch_run_setup_field_offset: int
     main_window: QtWidgets.QMainWindow
     centralwidget: QtWidgets.QWidget
     centrallayout: QtWidgets.QGridLayout
@@ -42,9 +45,12 @@ class Ui_MvRun_MainWindow(object):
     statusbar: QtWidgets.QStatusBar
 
     def setupUi(self, main_window):
+        self.switch_show_run_setup = (Utilities.get_stored_ini_value("ProcessSwitches", "show_run_setup", "Settings") == 1)
+        self.switch_run_setup_field_offset = int(Utilities.get_stored_ini_value("ProcessSwitches", "run_setup_field_offset", "Settings"))
         icon_filepath: str = lib.Utilities.get_filepath_by_name("MvRun.ico")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(icon_filepath), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+
 
         self.main_window = main_window
         self.main_window.resize(600, 500)
@@ -60,7 +66,7 @@ class Ui_MvRun_MainWindow(object):
 
         # Program Search And Selection ------------------------------------------------
         self.part_number_selection_widget = QtWidgets.QWidget(parent=self.centralwidget)
-        self.part_number_selection_widget.setMaximumHeight(70)
+        self.part_number_selection_widget.setMaximumHeight(50)
 
         self.part_number_selection_layout = QtWidgets.QGridLayout(self.part_number_selection_widget)
         self.part_number_selection_layout.setContentsMargins(0, 0, 0, 0)
@@ -108,14 +114,15 @@ class Ui_MvRun_MainWindow(object):
         self.user_fields_layout = QtWidgets.QGridLayout(self.user_fields_widget)
         self.user_fields_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.lblRunSetup = QtWidgets.QLabel(parent=self.centralwidget)
-        self.lblRunSetup.setText("Run/Setup:")
-        self.user_fields_layout.addWidget(self.lblRunSetup, 0, 0)
+        if self.switch_show_run_setup:
+            self.lblRunSetup = QtWidgets.QLabel(parent=self.centralwidget)
+            self.lblRunSetup.setText("Run/Setup:")
+            self.user_fields_layout.addWidget(self.lblRunSetup, 0, 0)
 
-        self.cboRunSetup = QtWidgets.QComboBox(parent=self.centralwidget)
-        self.cboRunSetup.addItem("Run")
-        self.cboRunSetup.addItem("Setup")
-        self.user_fields_layout.addWidget(self.cboRunSetup, 0, 1)
+            self.cboRunSetup = QtWidgets.QComboBox(parent=self.centralwidget)
+            self.cboRunSetup.addItem("Run")
+            self.cboRunSetup.addItem("Setup")
+            self.user_fields_layout.addWidget(self.cboRunSetup, 0, 1)
 
         # hack to get the grid to look right
         self.ue_placeholder_widget = QtWidgets.QWidget(parent=self.user_fields_widget)
@@ -124,48 +131,48 @@ class Ui_MvRun_MainWindow(object):
 
         self.lblEmployeeID = QtWidgets.QLabel(parent=self.user_fields_widget)
         self.lblEmployeeID.setText("Employee ID:")
-        self.user_fields_layout.addWidget(self.lblEmployeeID, 1, 0)
+        self.user_fields_layout.addWidget(self.lblEmployeeID, 1 - self.switch_run_setup_field_offset, 0)
 
         self.txtEmployeeID = QtWidgets.QLineEdit(parent=self.user_fields_widget)
         self.txtEmployeeID.setMaximumWidth(60)
         self.txtEmployeeID.setMaxLength(20)
-        self.user_fields_layout.addWidget(self.txtEmployeeID, 1, 1)
+        self.user_fields_layout.addWidget(self.txtEmployeeID, 1 - self.switch_run_setup_field_offset, 1)
 
         self.lblError_EmployeeID = QtWidgets.QLabel(parent=self.user_fields_widget)
         self.lblError_EmployeeID.setText("")
         self.lblError_EmployeeID.setStyleSheet("color: red;")
-        self.user_fields_layout.addWidget(self.lblError_EmployeeID, 1, 2)
+        self.user_fields_layout.addWidget(self.lblError_EmployeeID, 1 - self.switch_run_setup_field_offset, 2)
 
         self.lblJobNumber = QtWidgets.QLabel(parent=self.user_fields_widget)
         self.lblJobNumber.setText("Job Number:")
-        self.user_fields_layout.addWidget(self.lblJobNumber, 2, 0)
+        self.user_fields_layout.addWidget(self.lblJobNumber, 2 - self.switch_run_setup_field_offset, 0)
 
         self.txtJobNumber = QtWidgets.QLineEdit(parent=self.user_fields_widget)
         self.txtJobNumber.setMaximumWidth(100)
         self.txtJobNumber.setMaxLength(20)
-        self.user_fields_layout.addWidget(self.txtJobNumber, 2, 1)
+        self.user_fields_layout.addWidget(self.txtJobNumber, 2 - self.switch_run_setup_field_offset, 1)
 
         self.lblError_JobNumber = QtWidgets.QLabel(parent=self.user_fields_widget)
         self.lblError_JobNumber.setText("")
         self.lblError_JobNumber.setStyleSheet("color: red;")
-        self.user_fields_layout.addWidget(self.lblError_JobNumber, 2, 2)
+        self.user_fields_layout.addWidget(self.lblError_JobNumber, 2 - self.switch_run_setup_field_offset, 2)
 
         self.lblMachineName = QtWidgets.QLabel(parent=self.user_fields_widget)
         self.lblMachineName.setText("Machine Name:")
-        self.user_fields_layout.addWidget(self.lblMachineName, 3, 0)
+        self.user_fields_layout.addWidget(self.lblMachineName, 3 - self.switch_run_setup_field_offset, 0)
 
         self.txtMachineName = QtWidgets.QLineEdit(parent=self.user_fields_widget)
         self.txtMachineName.setMaximumWidth(100)
-        self.user_fields_layout.addWidget(self.txtMachineName, 3, 1)
+        self.user_fields_layout.addWidget(self.txtMachineName, 3 - self.switch_run_setup_field_offset, 1)
 
         self.lblError_MachineName = QtWidgets.QLabel(parent=self.user_fields_widget)
         self.lblError_MachineName.setText("")
         self.lblError_MachineName.setStyleSheet("color: red;")
-        self.user_fields_layout.addWidget(self.lblError_JobNumber, 3, 2)
+        self.user_fields_layout.addWidget(self.lblError_JobNumber, 3 - self.switch_run_setup_field_offset, 2)
 
         self.lblSequenceNumber = QtWidgets.QLabel(parent=self.user_fields_widget)
         self.lblSequenceNumber.setText("Sequence Number:")
-        self.user_fields_layout.addWidget(self.lblSequenceNumber, 4, 0)
+        self.user_fields_layout.addWidget(self.lblSequenceNumber, 4 - self.switch_run_setup_field_offset, 0)
 
         self.user_fields_widget.setLayout(self.user_fields_layout)
         self.centrallayout.addWidget(self.user_fields_widget, 2, 0)
