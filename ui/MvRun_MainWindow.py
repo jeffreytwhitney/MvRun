@@ -89,6 +89,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
     _iscmd_filepath: str
     _inspec_filename: str
     _inspec_filepath: str
+    _inspec_window_name: str
     _sequence_number_fields: List[QtWidgets.QLineEdit] = []
     _sequence_number_error_labels: List[QtWidgets.QLabel] = []
     _input_dirpath: str
@@ -252,6 +253,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self._max_sequence_number = int(Utilities.get_stored_ini_value("MinMaxValues", "max_sequence_number", "Settings"))
         self._inspec_filepath = Utilities.get_stored_ini_value("Paths", "inspec_filepath", "Settings")
         self._inspec_filename = Utilities.get_stored_ini_value("Paths", "inspec_filename", "Settings")
+        self._inspec_window_name = Utilities.get_stored_ini_value("Paths", "inspec_hwnd_name", "Settings")
         self._iscmd_filepath = Utilities.get_stored_ini_value("Paths", "iscmd_filepath", "Settings")
         return
 
@@ -400,7 +402,8 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             self._show_error_message(f"Error occurred:'{e.args[0]}'.", "Runtime Error")
             return
         _save_recent_folder_to_list(self._input_dirpath)
-        Utilities.execute_micro_vu_program(self._iscmd_filepath, self._inspec_filepath, self._inspec_filename, self._output_filepath)
+        Utilities.execute_micro_vu_program(self._iscmd_filepath, self._inspec_filepath,
+                                           self._inspec_filename, self._inspec_window_name, self._output_filepath)
 
     def cboRecentPrograms_currentTextChanged(self, new_text):
         self._input_dirpath = str(self.cboRecentPrograms.currentData().strip())

@@ -45,12 +45,12 @@ class Ui_MvRun_MainWindow(object):
     statusbar: QtWidgets.QStatusBar
 
     def setupUi(self, main_window):
-        self.switch_show_run_setup = (Utilities.get_stored_ini_value("ProcessSwitches", "show_run_setup", "Settings") == 1)
-        self.switch_run_setup_field_offset = int(Utilities.get_stored_ini_value("ProcessSwitches", "run_setup_field_offset", "Settings"))
+        self.switch_show_run_setup = (
+                    Utilities.get_stored_ini_value("ProcessSwitches", "show_run_setup", "Settings") == 1)
+        self.switch_run_setup_field_offset = 1 if self.switch_show_run_setup else 0
         icon_filepath: str = lib.Utilities.get_filepath_by_name("MvRun.ico")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(icon_filepath), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
-
 
         self.main_window = main_window
         self.main_window.resize(600, 500)
