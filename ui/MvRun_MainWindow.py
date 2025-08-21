@@ -5,6 +5,7 @@ from typing import List
 
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
+
 import lib
 from lib import Utilities, MicroVuFileProcessor
 from lib.MicroVuProgram import MicroVuProgram
@@ -227,9 +228,9 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             self._show_error_message(f"Directory '{self.cboRecentPrograms.currentText().strip()}' does not exist.", "File Not Found")
             return
         else:
-            files = files = [file for file in os.listdir(selected_program_path) if file.lower().endswith('.iwp')]
+            files = files = [file for file in os.listdir(selected_program_path)]
             for file in files:
-                if file.endswith(".iwp"):
+                if file.lower().endswith(".iwp"):
                     self.lstPrograms.addItem(file)
         return
 
@@ -402,8 +403,12 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             self._show_error_message(f"Error occurred:'{e.args[0]}'.", "Runtime Error")
             return
         _save_recent_folder_to_list(self._input_dirpath)
-        Utilities.execute_micro_vu_program(self._iscmd_filepath, self._inspec_filepath,
-                                           self._inspec_filename, self._inspec_window_name, self._output_filepath)
+
+        try:
+            Utilities.execute_micro_vu_program(self._iscmd_filepath, self._inspec_filepath,
+                                               self._inspec_filename, self._inspec_window_name, self._output_filepath)
+        except TimeoutError:
+            self._show_error_message(f"InSpec didn't load within the specified timeframe.", "Timeout Error")
 
     def cboRecentPrograms_currentTextChanged(self, new_text):
         self._input_dirpath = str(self.cboRecentPrograms.currentData().strip())

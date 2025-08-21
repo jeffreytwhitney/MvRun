@@ -28,13 +28,25 @@ def _is_process_running(process_name):
 
 def execute_micro_vu_program(iscmd_filepath: str, inspec_filepath, inspec_filename,
                              inspec_windowname: str, program_filepath: str):
+    inspec_max_timeout = int(get_stored_ini_value("ProcessSwitches", "inspec_max_timeout", "Settings"))
+
     if not _is_process_running(inspec_filename):
         subprocess.Popen([inspec_filepath])
-        time.sleep(3)
+        time.sleep(1)
     elif windows := _find_window_by_text(inspec_windowname):
         hwnd = windows[0][0]
         win32gui.ShowWindow(hwnd, 3)
         win32gui.SetForegroundWindow(hwnd)
+
+    if not _is_process_running(inspec_filename):
+        timeout = 1
+        for _ in range(inspec_max_timeout):
+            if _is_process_running(inspec_filename):
+                break
+            time.sleep(1)
+            timeout += 1
+            if timeout == inspec_max_timeout:
+                raise TimeoutError("InSpec failed to start within the allotted time.")
 
     subprocess.Popen([iscmd_filepath, "/run",
                       program_filepath, "/nowait"], creationflags=subprocess.SW_HIDE)
