@@ -1,0 +1,1 @@
+pyinstaller --noconfirm --onedir --windowed --icon "C:\Users\JTWhitney\PycharmProjects\MvRun\MvRun.ico" --add-data "C:\Users\JTWhitney\PycharmProjects\MvRun\lib;lib/" --add-data "C:\Users\JTWhitney\PycharmProjects\MvRun\ui;ui/"  "C:\Users\JTWhitney\PycharmProjects\MvRun\MvRun.py" --distpath "C:\Users\JTWhitney\PycharmProjects\MvRun\output"
