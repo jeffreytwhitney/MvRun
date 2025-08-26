@@ -70,8 +70,9 @@ def _save_recent_folder_to_list(recent_folder: str):
 
 
 def _write_recent_program_list_to_file(recent_folder_locations: list[str]):
+    recent_program_length: int = int(Utilities.get_stored_ini_value("ProcessSwitches", "recent_program_length", "Settings"))
     recent_program_list_filepath = _get_recent_program_list()
-    line_count = min(len(recent_folder_locations), 15)
+    line_count = min(len(recent_folder_locations), recent_program_length)
 
     with open(recent_program_list_filepath, "w") as f:
         for i in range(line_count):
@@ -97,6 +98,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
     _input_filepath: str
     _output_filepath: str
     _sequence_count: int
+    _inspec_sleep_length: int
 
     # Dunder Methods
     def __init__(self):
@@ -142,30 +144,42 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         self._sequence_number_error_labels.append(errorLabel_MultiSequenceNumber)
 
     def _enable_process_button(self):
-        if len(self.txtJobNumber.text().strip()) < self._min_job_number_length:
-            self.btnRunMicroVu.setEnabled(False)
-            return
-
-        if len(self.txtMachineName.text().strip()) < self._min_machine_name_length:
-            self.btnRunMicroVu.setEnabled(False)
-            return
-
-        if (not self.txtEmployeeID.text().strip().isdecimal()
-                or int(self.txtEmployeeID.text().strip()) < self._min_employee_number
-                or int(self.txtEmployeeID.text().strip()) > self._max_employee_number):
-            self.btnRunMicroVu.setEnabled(False)
-            return
-
-        for _ in self._sequence_number_fields:
-            if not _.text().strip().isdecimal():
+        try:
+            if len(self.txtJobNumber.text().strip()) < self._min_job_number_length:
                 self.btnRunMicroVu.setEnabled(False)
                 return
 
-        if not self.lstPrograms.currentItem().text().strip():
-            self.btnRunMicroVu.setEnabled(False)
+            if len(self.txtMachineName.text().strip()) < self._min_machine_name_length:
+                self.btnRunMicroVu.setEnabled(False)
+                return
+
+            if (not self.txtEmployeeID.text().strip().isdecimal()
+                    or int(self.txtEmployeeID.text().strip()) < self._min_employee_number
+                    or int(self.txtEmployeeID.text().strip()) > self._max_employee_number):
+                self.btnRunMicroVu.setEnabled(False)
+                return
+
+            for _ in self._sequence_number_fields:
+                if not _.text().strip().isdecimal():
+                    self.btnRunMicroVu.setEnabled(False)
+                    return
+
+                if int(_.text()) < 1 or int(_.text()) > self._max_sequence_number:
+                    self.btnRunMicroVu.setEnabled(False)
+                    return
+
+            if not self.lstPrograms.currentItem().text().strip():
+                self.btnRunMicroVu.setEnabled(False)
+                return
+
+            self.btnRunMicroVu.setEnabled(True)
             return
-        self.btnRunMicroVu.setEnabled(True)
-        return
+
+        except Exception as e:
+            self._show_error_message(
+                "There was an error while trying to enable the Run MicroVu button. Please try again.",
+                "Runtime Error",
+            )
 
     def _generate_output_filename(self, program_filename):
         program_name = os.path.splitext(program_filename)[0]
@@ -228,8 +242,8 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             self._show_error_message(f"Directory '{self.cboRecentPrograms.currentText().strip()}' does not exist.", "File Not Found")
             return
         else:
-            files = files = [file for file in os.listdir(selected_program_path)]
-            for file in files:
+            mvfiles = list(os.listdir(selected_program_path))
+            for file in mvfiles:
                 if file.lower().endswith(".iwp"):
                     self.lstPrograms.addItem(file)
         return
@@ -402,13 +416,17 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
         except Exception as e:
             self._show_error_message(f"Error occurred:'{e.args[0]}'.", "Runtime Error")
             return
+
         _save_recent_folder_to_list(self._input_dirpath)
 
         try:
             Utilities.execute_micro_vu_program(self._iscmd_filepath, self._inspec_filepath,
                                                self._inspec_filename, self._inspec_window_name, self._output_filepath)
         except TimeoutError:
-            self._show_error_message(f"InSpec didn't load within the specified timeframe.", "Timeout Error")
+            self._show_error_message(
+                "InSpec didn't load within the specified timeframe.",
+                "Timeout Error",
+            )
 
     def cboRecentPrograms_currentTextChanged(self, new_text):
         self._input_dirpath = str(self.cboRecentPrograms.currentData().strip())

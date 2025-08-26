@@ -29,10 +29,11 @@ def _is_process_running(process_name):
 def execute_micro_vu_program(iscmd_filepath: str, inspec_filepath, inspec_filename,
                              inspec_windowname: str, program_filepath: str):
     inspec_max_timeout = int(get_stored_ini_value("ProcessSwitches", "inspec_max_timeout", "Settings"))
+    inspec_sleep_length = int(get_stored_ini_value("ProcessSwitches", "inspec_sleep_length", "Settings"))
 
     if not _is_process_running(inspec_filename):
         subprocess.Popen([inspec_filepath])
-        time.sleep(1)
+        time.sleep(inspec_sleep_length)
     elif windows := _find_window_by_text(inspec_windowname):
         hwnd = windows[0][0]
         win32gui.ShowWindow(hwnd, 3)
