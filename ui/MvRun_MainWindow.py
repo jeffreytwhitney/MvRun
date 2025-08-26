@@ -7,9 +7,11 @@ from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
 
 import lib
-from lib import Utilities, MicroVuFileProcessor
+from lib import Utilities, MicroVuFileProcessor, MvLogger
+from logging import Logger
 from lib.MicroVuProgram import MicroVuProgram
 from ui.ui_MvRun_MainWindow import Ui_MvRun_MainWindow
+
 
 this = sys.modules[__name__]
 
@@ -99,9 +101,11 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
     _output_filepath: str
     _sequence_count: int
     _inspec_sleep_length: int
+    _logger: Logger
 
     # Dunder Methods
     def __init__(self):
+        self._logger = MvLogger.get_logger("mainWindowUILogger")
         super().__init__()
         self.setupUi(self)
         self._load_settings()
@@ -176,6 +180,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             return
 
         except Exception as e:
+            self._logger.error(f"Error while trying to enable the Run MicroVu button: {str(e)}", exc_info=True)
             self._show_error_message(
                 "There was an error while trying to enable the Run MicroVu button. Please try again.",
                 "Runtime Error",
@@ -471,6 +476,7 @@ def main():
     app.setStyleSheet(styleSheet)
     ui = MvRun_MainWindow()
     ui.show()
+
     sys.exit(app.exec())
 
 

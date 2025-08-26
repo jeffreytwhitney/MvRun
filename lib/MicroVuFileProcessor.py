@@ -5,6 +5,8 @@ from abc import ABCMeta
 from lib import Utilities
 from lib.MicroVuProgram import MicroVuProgram
 from lib.Utilities import write_lines_to_file
+from logging import Logger
+from lib import MvLogger
 
 
 def get_processor(input_filepath: str, is_setup: bool, machine_name: str, employee_id: str,
@@ -24,10 +26,12 @@ class Processor(metaclass=ABCMeta):
     _output_filepath: str
     _output_directory: str
     _output_directory_searchpath: str
+    _logger: Logger
 
     # Dunder Methods
     def __init__(self, input_filepath: str, is_setup: bool, machine_name: str, employee_id: str, job_number: str,
                  sequence_numbers: list[int], output_path: str):
+        self._logger = MvLogger.get_logger("microVuFileProcessorLogger")
         self.input_filepath = input_filepath
         self._microvu_program = MicroVuProgram(input_filepath)
         self._output_filepath = output_path
@@ -70,24 +74,28 @@ class Processor(metaclass=ABCMeta):
             if line.find("(Name \"SETUP_PROMPT") > -1 and self._should_insert_prompt:
                 insertion_index: int = self._microvu_program.prompt_insertion_index
                 self._microvu_program.insert_line(insertion_index, line)
+                self._logger.debug(f"_replace_prompt_section: Inserted prompt at index {insertion_index}")
                 continue
 
             if line.find("(Name \"EMPLOYEE") > -1:
                 new_line = line.replace("<E>", self.employee_id)
                 if microvu_employee_prompt := self._microvu_program.get_instructions_by_name("EMPLOYEE")[0]:
                     self._microvu_program.file_lines[microvu_employee_prompt.line_index] = new_line
+                    self._logger.debug(f"_replace_prompt_section: Replaced employee prompt with {new_line}")   
                     continue
 
             if line.find("(Name \"JOB") > -1:
                 new_line = line.replace("<J>", self.job_number)
                 if microvu_job_prompt := self._microvu_program.get_instructions_by_name("JOB")[0]:
                     self._microvu_program.file_lines[microvu_job_prompt.line_index] = new_line
+                    self._logger.debug(f"_replace_prompt_section: Replaced job prompt with {new_line}")   
                     continue
 
             if line.find("(Name \"MACHINE") > -1:
                 new_line = line.replace("<M>", self.machine_number)
                 if microvu_machine_prompt := self._microvu_program.get_instructions_by_name("MACHINE")[0]:
                     self._microvu_program.file_lines[microvu_machine_prompt.line_index] = new_line
+                    self._logger.debug(f"_replace_prompt_section: Replaced machine prompt with {new_line}")   
                     continue
 
             if line.find("(Name \"SEQUENCE") > -1:
@@ -96,6 +104,7 @@ class Processor(metaclass=ABCMeta):
                     new_line = new_line.replace("<I>", "")
                     if microvu_sequence_prompt := self._microvu_program.get_instructions_by_name("SEQUENCE")[0]:
                         self._microvu_program.file_lines[microvu_sequence_prompt.line_index] = new_line
+                        self._logger.debug(f"_replace_prompt_section: Replaced single-part sequence prompt with {new_line}")   
                     continue
                 elif len(self.sequence_numbers) > 1:
                     sequence_prompts = self._microvu_program.get_instructions_by_name("SEQUENCE")
@@ -104,6 +113,7 @@ class Processor(metaclass=ABCMeta):
                         new_line = new_line.replace("<I>", str(counter))
                         if microvu_sequence_prompt := sequence_prompts[counter - 1]:
                             self._microvu_program.file_lines[microvu_sequence_prompt.line_index] = new_line
+                            self._logger.debug(f"_replace_prompt_section: Replaced multi-part sequence prompt {counter} with {new_line}")   
                     continue
 
     def _write_file_to_output_directory(self):
@@ -111,6 +121,7 @@ class Processor(metaclass=ABCMeta):
             os.mkdir(self._output_directory)
         self._delete_all_microvu_files()
         write_lines_to_file(self._output_filepath, self._microvu_program.file_lines, encoding='utf-16-le', newline='\r\n')
+        self._logger.debug(f"_write_file_to_output_directory: Wrote file to {self._output_filepath}")
 
     # Public Methods
     def add_sequence_number(self, sequence_number: int):
@@ -165,10 +176,13 @@ class Processor(metaclass=ABCMeta):
 class CoonRapidsProcessor(Processor):
     def process_file(self) -> None:
         if len(self._sequence_numbers) != self._microvu_program.sequence_count:
+            self._logger.error("Sequence count does not match number of sequences in file.")
             raise ProcessorException("Sequence count does not match number of sequences in file.")
+
         try:
             self._process_microvu()
         except Exception as e:
+            self._logger.error(f"Error occurred:'{e.args[0]}'.")
             raise ProcessorException(e.args[0]) from e
 
     def _process_microvu(self):

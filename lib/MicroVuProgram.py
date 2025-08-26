@@ -1,7 +1,10 @@
+from logging import Logger
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 import re
+
+from lib import MvLogger
 from lib.Utilities import get_utf_encoded_file_lines
 
 
@@ -46,6 +49,7 @@ class MicroVuProgram:
     _file_lines: list[str]
     _instructions: list[Instruction]
     _is_setup: bool = False
+    _logger: Logger
 
     # Static Methods
     @staticmethod
@@ -77,15 +81,19 @@ class MicroVuProgram:
 
     # Dunder Methods
     def __init__(self, input_filepath: str):
+        self._logger = MvLogger.get_logger("microVuProgramLogger")
         self._filepath = input_filepath
         self._file_lines = get_utf_encoded_file_lines(self._filepath)
         self._load_instructions()
 
     # Internal Methods
     def _get_instructions_count(self) -> int:
-        return len([line for line in self._file_lines if line.find("(Name ") > 1])
+        instruction_count = len([line for line in self._file_lines if line.find("(Name ") > 1])
+        self._logger.debug(f"_get_instructions_count: {instruction_count} instructions found in {self._filepath}")
+        return instruction_count
 
     def _global_replace(self, old_value: str, new_value: str) -> None:
+        self._logger.debug(f"_global_replace: Replacing {old_value} with {new_value} in {self._filepath}")
         quoted_old_value = f"\"{old_value}\""
         quoted_new_value = f"\"{new_value}\""
         for i, l in enumerate(self._file_lines):
@@ -107,6 +115,7 @@ class MicroVuProgram:
                 instruction_lines.append(instruction)
 
         self._instructions = instruction_lines
+        self._logger.debug(f"_load_instructions: Loaded {len(self._instructions)} instructions from {self._filepath}")
 
     # Properties
     @property
