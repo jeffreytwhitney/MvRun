@@ -5,7 +5,7 @@ a = Analysis(
     ['C:\\Users\\JTWhitney\\PycharmProjects\\MvRun\\MvRun.py'],
     pathex=[],
     binaries=[],
-    datas=[('C:\\Users\\JTWhitney\\PycharmProjects\\MvRun\\lib', 'lib/'), ('C:\\Users\\JTWhitney\\PycharmProjects\\MvRun\\ui', 'ui/'), ('C:\\Users\\JTWhitney\\PycharmProjects\\MvRun\\eof.bat', '.'), ('C:\\Users\\JTWhitney\\PycharmProjects\\MvRun\\nada.iwp', '.')],
+    datas=[('C:\\Users\\JTWhitney\\PycharmProjects\\MvRun\\lib', 'lib/'), ('C:\\Users\\JTWhitney\\PycharmProjects\\MvRun\\ui', 'ui/'), ('C:\\Users\\JTWhitney\\PycharmProjects\\MvRun\\eof.bat', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
