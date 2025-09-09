@@ -2,6 +2,9 @@ import glob
 import os
 from abc import ABCMeta
 
+from typing_extensions import evaluate_forward_ref
+from win32com.makegw.makegwparse import error_not_found
+
 from lib import Utilities
 from lib.MicroVuProgram import MicroVuProgram
 from lib.Utilities import write_lines_to_file
@@ -45,6 +48,24 @@ class Processor(metaclass=ABCMeta):
 
     # Status Methods
     @staticmethod
+    def _get_eof_file_path() -> str:
+        prompt_filepath: str = ""
+        pattern = 'eof_text.txt'
+        for root, dirs, files in os.walk('.'):
+            for file in files:
+                if file == pattern:
+                    prompt_filepath = os.path.join(root, file)
+        return prompt_filepath
+
+    @staticmethod
+    def _get_eof_file_lines() -> list[str]:
+        eof_filepath = Processor._get_eof_file_path()
+        if not eof_filepath:
+            return []
+        with open(eof_filepath, "r", encoding='utf-16-le') as f:
+            return f.readlines()
+
+    @staticmethod
     def _get_prompt_file_path() -> str:
         prompt_filepath: str = ""
         pattern = 'prompt_text.txt'
@@ -67,6 +88,18 @@ class Processor(metaclass=ABCMeta):
         files = glob.glob(self._output_directory_searchpath)
         for f in files:
             os.remove(f)
+
+    def _insert_eof_section(self) -> None:
+        eof_lines = self._get_eof_file_lines()
+        eof_batch_filepath = Utilities.get_stored_ini_value("Paths", "local_eof_batch_file", "Settings")
+        microvu_system_id = self._microvu_program.last_microvu_system_id
+        exe_line = eof_lines[1]
+        exe_line = exe_line.replace("<?SYS>", microvu_system_id)
+        exe_line = exe_line.replace("<?EXE>", eof_batch_filepath)
+        self._logger.debug(f"_insert_eof_section: Inserted EOF at index {self._microvu_program.instructions_index}")
+        self._microvu_program.file_lines.append(exe_line)
+        self._microvu_program.file_lines.append(eof_lines[2])
+        self._microvu_program.file_lines.append(eof_lines[3])
 
     def _replace_prompt_section(self) -> None:
         prompt_lines = self._get_prompt_file_lines()
@@ -182,8 +215,9 @@ class CoonRapidsProcessor(Processor):
         try:
             self._process_microvu()
         except Exception as e:
-            self._logger.error(f"Error occurred:'{e.args[0]}'.")
-            raise ProcessorException(e.args[0]) from e
+            if e.args[0] is not None:
+                self._logger.error(f"Error occurred:'{e.args[0]}'.")
+                raise ProcessorException(e.args[0]) from e
 
     def _process_microvu(self):
         self._microvu_program.is_setup = self.is_setup
@@ -196,6 +230,7 @@ class CoonRapidsProcessor(Processor):
             new_export_path = os.path.join(export_root_path, existing_export_path)
             self._microvu_program.export_filepath = new_export_path
         self._replace_prompt_section()
+        self._insert_eof_section()
         self._microvu_program.update_instruction_count()
         self._write_file_to_output_directory()
 

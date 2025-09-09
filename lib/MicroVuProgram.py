@@ -107,17 +107,22 @@ class MicroVuProgram:
 
         for index, line in enumerate(self._file_lines):
             if line.find("(Name ") > 1:
-                instruction_type_text = re.search(pattern, line)[1]
-                instruction_type = InstructionType(instruction_type_text)
-                guid = re.search(pattern, line)[2]
-                name_value = re.search(pattern, line)[3]
-                instruction = Instruction(index, guid, line, name_value, instruction_type)
-                instruction_lines.append(instruction)
+                if instruction_types := re.search(pattern, line):
+                    instruction_type_text = instruction_types[1]
+                    instruction_type = InstructionType(instruction_type_text)
+                    guid = re.search(pattern, line)[2]
+                    name_value = re.search(pattern, line)[3]
+                    instruction = Instruction(index, guid, line, name_value, instruction_type)
+                    instruction_lines.append(instruction)
 
         self._instructions = instruction_lines
         self._logger.debug(f"_load_instructions: Loaded {len(self._instructions)} instructions from {self._filepath}")
 
     # Properties
+    @property
+    def eof_batch_call_index(self) -> int:
+        return len(self._file_lines)
+
     @property
     def export_filepath(self) -> str:
         if self.is_smartprofile:
@@ -166,6 +171,11 @@ class MicroVuProgram:
         return Path(self._filepath).name
 
     @property
+    def has_eof_batch_call(self) -> bool:
+        eof_batch_call_line = self.get_line_containing_text("eof_run_bat")
+        return eof_batch_call_line != ""
+
+    @property
     def has_setup_picture(self) -> bool:
         insertion_index = self.prompt_insertion_index - 2
         command_lines = self.get_instructions_by_type(InstructionType.COMMAND_LINE)
@@ -209,6 +219,14 @@ class MicroVuProgram:
         if existing_export_filename == "OUTPUT":
             return True
         return "C:\\MICROVU\\POINTCLOUDS\\" in existing_export_filepath
+
+    @property
+    def last_microvu_system_id(self) -> str:
+        last_system_reference_line = [line for line in self.file_lines if line.upper().find("(SYS ") > 1][-1]
+        if last_system_reference_line.startswith("Sys 1"):
+            return MicroVuProgram.get_node_text(last_system_reference_line, "Sys 1", " ")
+        else:
+            return MicroVuProgram.get_node_text(last_system_reference_line, "(Sys", " ", ")")
 
     @property
     def prompt_insertion_index(self) -> int:

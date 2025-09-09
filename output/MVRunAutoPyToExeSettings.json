@@ -60,6 +60,14 @@
   {
    "optionDest": "datas",
    "value": "C:/Users/JTWhitney/PycharmProjects/MvRun/ui;ui/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/JTWhitney/PycharmProjects/MvRun/eof.bat;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/JTWhitney/PycharmProjects/MvRun/nada.iwp;."
   }
  ],
  "nonPyinstallerOptions": {

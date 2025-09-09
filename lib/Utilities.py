@@ -1,5 +1,6 @@
 import configparser
 import os
+import shutil
 import subprocess
 import time
 
@@ -26,8 +27,28 @@ def _is_process_running(process_name):
     return last_line.lower().startswith(process_name.lower())
 
 
+def check_for_local_run_files():
+    mvrun_rootpath = get_stored_ini_value("Paths", "mvrun_rootpath", "Settings")
+    mv_rootpath = get_stored_ini_value("Paths", "mv_rootpath", "Settings")
+    mv_nada_filepath = os.path.join(mv_rootpath, "NADA.iwp")
+    local_eof_filepath = os.path.join(mvrun_rootpath, "EOF.bat")
+    local_nada_filepath = os.path.join(mvrun_rootpath, "NADA.iwp")
+    network_eof_filepath = get_stored_ini_value("Paths", "network_nada_file", "Settings")
+    network_nada_filepath = get_stored_ini_value("Paths", "network_eof_batch_file", "Settings")
+
+    if not os.path.exists(local_eof_filepath):
+        shutil.copy(network_eof_filepath, local_eof_filepath)
+
+    if not os.path.exists(local_nada_filepath):
+        shutil.copy(network_nada_filepath, local_nada_filepath)
+
+    if not os.path.exists(mv_nada_filepath):
+        shutil.copy(network_nada_filepath, mv_nada_filepath)
+
+
 def execute_micro_vu_program(iscmd_filepath: str, inspec_filepath, inspec_filename,
                              inspec_windowname: str, program_filepath: str):
+    check_for_local_run_files()
     inspec_max_timeout = int(get_stored_ini_value("ProcessSwitches", "inspec_max_timeout", "Settings"))
     inspec_sleep_length = int(get_stored_ini_value("ProcessSwitches", "inspec_sleep_length", "Settings"))
 
