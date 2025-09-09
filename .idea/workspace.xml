@@ -5,21 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad24cfd2-0a5d-4132-9610-bbf0aa1cb3ff" name="Changes" comment="1.2.3 Added a timeout for starting InSpec. (20 seconds).">
-      <change afterPath="$PROJECT_DIR$/eof.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nada.iwp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/eof_text.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/test_Utilities.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/eof_text.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MvRun.py" beforeDir="false" afterPath="$PROJECT_DIR$/MvRun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MicroVuProgram.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MicroVuProgram.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/Settings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Settings.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/Utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Utilities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/MVRunAutoPyToExeSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/output/MVRunAutoPyToExeSettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/MvRun.spec" beforeDir="false" afterPath="$PROJECT_DIR$/output/MvRun.spec" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/build.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/output/build.cmd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/giveitatry.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/giveitatry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eof.bat" beforeDir="false" afterPath="$PROJECT_DIR$/eof.bat" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -334,7 +321,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756234234690</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="1.2.3 Added a timeout for starting InSpec. (20 seconds).">
+      <option name="closed" value="true" />
+      <created>1757432911029</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1757432911029</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="UnknownFeatures">

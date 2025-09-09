@@ -2,9 +2,6 @@ import glob
 import os
 from abc import ABCMeta
 
-from typing_extensions import evaluate_forward_ref
-from win32com.makegw.makegwparse import error_not_found
-
 from lib import Utilities
 from lib.MicroVuProgram import MicroVuProgram
 from lib.Utilities import write_lines_to_file

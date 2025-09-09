@@ -1,10 +1,7 @@
 @echo off
-echo **********************************************************************************************************
-echo If this window is staying open, it means that the MicroVu software (InSpec) is asking whether or not you want to save the file.
-echo Switch to the Inspec window and choose 'No.'
-echo **********************************************************************************************************
-IF NOT EXIST "C:\Microvu Programs\nada.iwp" (COPY "C:MvRun\nada.iwp" "C:\Microvu Programs\")
-"C:\Program Files (x86)\Micro-Vu Corporation\InSpec for Windows\iscmd.exe" /run C:\Microvu Programs\nada.iwp
+powershell -command "Stop-Process -Name InSpec* -Force"
 cd "C:\Microvu Programs\MvRun"
-DEL *.iwp /Q /F
-powershell -command "$mvRunProcess = Get-Process -Name MvRun* -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowHandle -ne 0 }; if ($mvRunProcess) { (New-Object -ComObject wscript.shell).AppActivate($mvRunProcess.Id)}"
+powershell -command "foreach ($a in (ls -r -i info* -File)) { del $a.FullName }
+cd "C:\Program Files (x86)\Micro-Vu Corporation\InSpec for Windows\"
+start "" "InSpec.exe"
+powershell -command "$mvRunProcess = Get-Process -Name MvRun -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowHandle -ne 0 }; if ($mvRunProcess) { (New-Object -ComObject wscript.shell).AppActivate($mvRunProcess.Id)}"
