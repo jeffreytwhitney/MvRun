@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad24cfd2-0a5d-4132-9610-bbf0aa1cb3ff" name="Changes" comment="1.2.3 Added a timeout for starting InSpec. (20 seconds).">
-      <change beforePath="$PROJECT_DIR$/nada.iwp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/recent_folders.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ui/recent_folders.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,32 +46,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Batch.Compile MainWindowUI.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_Utilities.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.AutoPyToExe.executor&quot;: &quot;Run&quot;,
-    &quot;Python.MicroVuFileProcessor.executor&quot;: &quot;Run&quot;,
-    &quot;Python.MicroVuProgram.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.MvRun.executor&quot;: &quot;Run&quot;,
-    &quot;Python.MvRun_MainWindow.executor&quot;: &quot;Run&quot;,
-    &quot;Python.TestUI.executor&quot;: &quot;Run&quot;,
-    &quot;Python.Utilities.executor&quot;: &quot;Run&quot;,
-    &quot;Python.dynamiclayouts.executor&quot;: &quot;Run&quot;,
-    &quot;Python.giveitatry.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.scratch.executor&quot;: &quot;Run&quot;,
-    &quot;Python.scratch_1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ui_MvRun_MainWindow.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/JTWhitney/PycharmProjects/MvRun/test&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.updates&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Batch.Compile MainWindowUI.executor": "Run",
+    "Python tests.Python tests in test_Utilities.py.executor": "Run",
+    "Python.AutoPyToExe.executor": "Run",
+    "Python.MicroVuFileProcessor.executor": "Run",
+    "Python.MicroVuProgram.executor": "Debug",
+    "Python.MvRun.executor": "Debug",
+    "Python.MvRun_MainWindow.executor": "Run",
+    "Python.TestUI.executor": "Run",
+    "Python.Utilities.executor": "Run",
+    "Python.dynamiclayouts.executor": "Run",
+    "Python.giveitatry.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.scratch.executor": "Run",
+    "Python.scratch_1.executor": "Run",
+    "Python.ui_MvRun_MainWindow.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/JTWhitney/PycharmProjects/MvRun/test",
+    "settings.editor.selected.configurable": "preferences.updates"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\JTWhitney\PycharmProjects\MvRun\test" />
@@ -79,6 +80,35 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\JTWhitney\PycharmProjects\MvRun\test" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="MvRun" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="MvRun" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MvRun.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.MvRun" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -336,7 +366,31 @@
       <option name="project" value="LOCAL" />
       <updated>1757436401263</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="1.2.3 Added a timeout for starting InSpec. (20 seconds).">
+      <option name="closed" value="true" />
+      <created>1757436465258</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1757436465258</updated>
+    </task>
+    <task id="LOCAL-00032" summary="1.2.3 Added a timeout for starting InSpec. (20 seconds).">
+      <option name="closed" value="true" />
+      <created>1757437056185</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1757437056185</updated>
+    </task>
+    <task id="LOCAL-00033" summary="1.2.3 Added a timeout for starting InSpec. (20 seconds).">
+      <option name="closed" value="true" />
+      <created>1757437092186</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1757437092186</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -364,6 +418,16 @@
           <url>file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py</url>
           <line>21</line>
           <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ui/MvRun_MainWindow.py</url>
+          <line>409</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/lib/MicroVuFileProcessor.py</url>
+          <line>194</line>
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

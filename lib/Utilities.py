@@ -30,7 +30,7 @@ def _is_process_running(process_name):
 def check_for_local_run_files():
     mvrun_rootpath = get_stored_ini_value("Paths", "mvrun_rootpath", "Settings")
     local_eof_filepath = os.path.join(mvrun_rootpath, "EOF.bat")
-    network_eof_filepath = get_stored_ini_value("Paths", "network_nada_file", "Settings")
+    network_eof_filepath = get_stored_ini_value("Paths", "network_eof_batch_file", "Settings")
 
     if not os.path.exists(local_eof_filepath):
         shutil.copy(network_eof_filepath, local_eof_filepath)
