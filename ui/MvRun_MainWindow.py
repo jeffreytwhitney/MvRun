@@ -423,6 +423,8 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             return
 
         _save_recent_folder_to_list(self._input_dirpath)
+        for seq in self._sequence_number_fields:
+            seq.setText("")
 
         try:
             Utilities.execute_micro_vu_program(self._iscmd_filepath, self._inspec_filepath,
