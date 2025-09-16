@@ -2,6 +2,7 @@ import configparser
 import os
 import shutil
 import subprocess
+import sys
 import time
 
 import win32gui
@@ -25,6 +26,14 @@ def _is_process_running(process_name):
     output = subprocess.check_output(call).decode()
     last_line = output.strip().split('\r\n')[-1]
     return last_line.lower().startswith(process_name.lower())
+
+
+def resolve_path():
+    return (
+        os.path.abspath(os.path.dirname(sys.executable))
+        if getattr(sys, "frozen", False)
+        else os.path.abspath(os.path.join(os.getcwd()))
+    )
 
 
 def check_for_local_run_files():

@@ -172,7 +172,7 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
                     self.btnRunMicroVu.setEnabled(False)
                     return
 
-            if not self.lstPrograms.currentItem().text().strip():
+            if not self.lstPrograms.currentItem():
                 self.btnRunMicroVu.setEnabled(False)
                 return
 
@@ -251,6 +251,9 @@ class MvRun_MainWindow(QtWidgets.QMainWindow, Ui_MvRun_MainWindow):
             for file in mvfiles:
                 if file.lower().endswith(".iwp"):
                     self.lstPrograms.addItem(file)
+        if self.lstPrograms.count() > 0:
+            self.lstPrograms.setCurrentRow(0)
+            self.txtEmployeeID.setFocus()
         return
 
     def _load_recent_folders(self):

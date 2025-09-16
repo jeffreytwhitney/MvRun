@@ -153,10 +153,6 @@ class Processor(metaclass=ABCMeta):
         write_lines_to_file(self._output_filepath, self._microvu_program.file_lines, encoding='utf-16-le', newline='\r\n')
         self._logger.debug(f"_write_file_to_output_directory: Wrote file to {self._output_filepath}")
 
-    # Public Methods
-    def add_sequence_number(self, sequence_number: int):
-        self._sequence_numbers.append(sequence_number)
-
     def process_file(self) -> None:
         raise NotImplementedError("Must be implemented by subclass")
 
@@ -168,10 +164,6 @@ class Processor(metaclass=ABCMeta):
     @property
     def employee_id(self) -> str:
         return self._employee_id
-
-    @employee_id.setter
-    def employee_id(self, value: str):
-        self._employee_id = value
 
     @property
     def is_setup(self):
