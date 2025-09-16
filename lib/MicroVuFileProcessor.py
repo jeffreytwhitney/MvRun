@@ -1,5 +1,6 @@
 import glob
 import os
+import shutil
 from abc import ABCMeta
 
 from lib import Utilities
@@ -25,6 +26,7 @@ class Processor(metaclass=ABCMeta):
     _microvu_program: MicroVuProgram
     _output_filepath: str
     _output_directory: str
+    _input_directory: str
     _output_directory_searchpath: str
     _logger: Logger
 
@@ -33,6 +35,7 @@ class Processor(metaclass=ABCMeta):
                  sequence_numbers: list[int], output_path: str):
         self._logger = MvLogger.get_logger("microVuFileProcessorLogger")
         self.input_filepath = input_filepath
+        self._input_directory = os.path.dirname(input_filepath)
         self._microvu_program = MicroVuProgram(input_filepath)
         self._output_filepath = output_path
         self._output_directory = os.path.dirname(self._output_filepath)
@@ -81,6 +84,12 @@ class Processor(metaclass=ABCMeta):
             return f.readlines()
 
     # Protected Methods
+    def _copy_stored_alignments_to_output_directory(self):
+        stored_alignments_directories = [entry.path for entry in os.scandir(self._input_directory) if entry.is_dir()]
+        for directory in stored_alignments_directories:
+            output_dir_path = os.path.join(self._output_directory, os.path.basename(directory))
+            shutil.copytree(directory, output_dir_path, dirs_exist_ok=True)
+
     def _delete_all_microvu_files(self):
         files = glob.glob(self._output_directory_searchpath)
         for f in files:
@@ -222,6 +231,8 @@ class CoonRapidsProcessor(Processor):
         self._insert_eof_section()
         self._microvu_program.update_instruction_count()
         self._write_file_to_output_directory()
+        if self._microvu_program.has_rotary:
+            self._copy_stored_alignments_to_output_directory()
 
 
 class ProcessorException(Exception):

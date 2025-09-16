@@ -1,8 +1,8 @@
-from logging import Logger
+import re
 from dataclasses import dataclass
 from enum import Enum
+from logging import Logger
 from pathlib import Path
-import re
 
 from lib import MvLogger
 from lib.Utilities import get_utf_encoded_file_lines
@@ -177,6 +177,12 @@ class MicroVuProgram:
         return eof_batch_call_line != ""
 
     @property
+    def has_rotary(self) -> bool:
+        line_idx = self.get_index_containing_text("AutoExpFile")
+        line_text = self._file_lines[line_idx]
+        return "(UseRotary 1)" in line_text
+
+    @property
     def has_setup_picture(self) -> bool:
         insertion_index = self.prompt_insertion_index - 2
         command_lines = self.get_instructions_by_type(InstructionType.COMMAND_LINE)
@@ -196,7 +202,8 @@ class MicroVuProgram:
 
     @property
     def is_file_salted(self) -> bool:
-        return self._file_lines[0].startswith("InSpec") is False
+        bob = self._file_lines[0]
+        return not self._file_lines[0].startswith("\ufeffInSpec")
 
     @property
     def is_multi_part(self):
@@ -261,7 +268,8 @@ class MicroVuProgram:
         return [i for i in self._instructions if i.name.lower().find(instruction_name.lower()) > -1]
 
     def get_instructions_by_name_and_type(self, instruction_name: str, instruction_type: InstructionType):
-        return [i for i in self._instructions if i.name.lower().find(instruction_name.lower()) > -1 and instruction_type == i.type]
+        return [i for i in self._instructions if
+                i.name.lower().find(instruction_name.lower()) > -1 and instruction_type == i.type]
 
     def get_instructions_by_type(self, instruction_type: InstructionType):
         return [i for i in self._instructions if i.type == instruction_type]
@@ -286,7 +294,7 @@ class MicroVuProgram:
     def unsalt_file(self) -> None:
         first_line = self._file_lines[0]
         first_ord = ord(first_line[0])
-        if first_line.startswith("InSpec", 1):
+        if first_line.startswith("\ufeffInSpec", 1):
             return
         file_start_index = first_line.find("InSpec")
         new_line = chr(first_ord) + first_line[file_start_index:]
