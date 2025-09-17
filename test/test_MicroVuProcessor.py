@@ -64,6 +64,7 @@ def test_rotary(mv_rotary_path, output_dir):
     assert len(file_lines) > 0
     title_line = file_lines[2]
     assert "(AutoConf 0)" in title_line
+    assert "(Conf 1)" not in title_line
     assert "(AutoExpFile \"M:\\2030-6516-1300_OP10_REVB_.csv\")" in title_line
     assert "(Name \"EMPLOYEE\") (ExpLab) (ExpProps Txt) (Txt \"4404\")" in file_lines[16]
     assert "(Name \"JOB\") (ExpLab) (ExpProps Txt) (Txt \"1234\")" in file_lines[17]

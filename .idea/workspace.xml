@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad24cfd2-0a5d-4132-9610-bbf0aa1cb3ff" name="Changes" comment="1.2.3 Added testing to make sure everything is copacetic.">
-      <change afterPath="$PROJECT_DIR$/test/test_MicroVuProgram.py" afterDir="false" />
+    <list default="true" id="ad24cfd2-0a5d-4132-9610-bbf0aa1cb3ff" name="Changes" comment="1.2.4 Added in copying stored alignments for those files that use them.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eof.bat" beforeDir="false" afterPath="$PROJECT_DIR$/eof.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MicroVuFileProcessor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/MicroVuProgram.py" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MicroVuProgram.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/conftest.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/test_MicroVuProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_MicroVuProcessor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -51,35 +47,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Batch.Compile MainWindowUI.executor": "Run",
-    "Python tests.Python tests in test_MicroVuProcessor.py.executor": "Run",
-    "Python tests.Python tests in test_Utilities.py.executor": "Run",
-    "Python tests.pytest in test_MicroVuProcessor.py.executor": "Debug",
-    "Python tests.pytest in test_MicroVuProgram.py.executor": "Run",
-    "Python.AutoPyToExe.executor": "Run",
-    "Python.MicroVuFileProcessor.executor": "Run",
-    "Python.MicroVuProgram.executor": "Run",
-    "Python.MvRun.executor": "Run",
-    "Python.MvRun_MainWindow.executor": "Run",
-    "Python.TestUI.executor": "Run",
-    "Python.Utilities.executor": "Run",
-    "Python.dynamiclayouts.executor": "Run",
-    "Python.giveitatry.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.scratch.executor": "Run",
-    "Python.scratch_1.executor": "Run",
-    "Python.ui_MvRun_MainWindow.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/JTWhitney/PycharmProjects/MvRun/test",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Batch.Compile MainWindowUI.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests in test_MicroVuProcessor.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests in test_Utilities.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest in test_MicroVuProcessor.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.pytest in test_MicroVuProgram.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python.AutoPyToExe.executor&quot;: &quot;Run&quot;,
+    &quot;Python.MicroVuFileProcessor.executor&quot;: &quot;Run&quot;,
+    &quot;Python.MicroVuProgram.executor&quot;: &quot;Run&quot;,
+    &quot;Python.MvRun.executor&quot;: &quot;Run&quot;,
+    &quot;Python.MvRun_MainWindow.executor&quot;: &quot;Run&quot;,
+    &quot;Python.TestUI.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Utilities.executor&quot;: &quot;Run&quot;,
+    &quot;Python.dynamiclayouts.executor&quot;: &quot;Run&quot;,
+    &quot;Python.giveitatry.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.scratch.executor&quot;: &quot;Run&quot;,
+    &quot;Python.scratch_1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ui_MvRun_MainWindow.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/JTWhitney/PycharmProjects/MvRun/test&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\JTWhitney\PycharmProjects\MvRun\test" />
@@ -422,7 +418,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758022937138</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="1.2.4 Added in copying stored alignments for those files that use them.">
+      <option name="closed" value="true" />
+      <created>1758035915462</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1758035915462</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -437,7 +441,8 @@
     <MESSAGE value="1.2.2 Made Inspec activate if it's either minimized or behind the MvRun window." />
     <MESSAGE value="1.2.3 Added a timeout for starting InSpec. (20 seconds)." />
     <MESSAGE value="1.2.3 Added testing to make sure everything is copacetic." />
-    <option name="LAST_COMMIT_MESSAGE" value="1.2.3 Added testing to make sure everything is copacetic." />
+    <MESSAGE value="1.2.4 Added in copying stored alignments for those files that use them." />
+    <option name="LAST_COMMIT_MESSAGE" value="1.2.4 Added in copying stored alignments for those files that use them." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -451,16 +456,6 @@
           <url>file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py</url>
           <line>21</line>
           <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/test/test_MicroVuProcessor.py</url>
-          <line>72</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/lib/MicroVuFileProcessor.py</url>
-          <line>90</line>
-          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

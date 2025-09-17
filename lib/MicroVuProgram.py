@@ -149,6 +149,7 @@ class MicroVuProgram:
         updated_line_text = updated_line_text.replace("(FldDlm Tab)", "(FldDlm CrLf)")
         updated_line_text = updated_line_text.replace("(FldDlm Comma)", "(FldDlm CrLf)")
         updated_line_text = updated_line_text.replace("(AutoConf 1)", "(AutoConf 0)")
+        updated_line_text = updated_line_text.replace("(Conf 1)", "(Conf 0)")
         updated_line_text = updated_line_text.replace("(NoDblQt 1)", "(NoDblQt 0)")
         updated_line_text = updated_line_text.replace("(RunSep 1)", "(RunSep 0)")
         updated_line_text = updated_line_text.replace("(ValDlm Comma)", "(ValDlm Tab)")
